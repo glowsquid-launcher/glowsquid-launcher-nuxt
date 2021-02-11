@@ -6,7 +6,7 @@
         appear
         duration="100"
       >
-        <div class="w-2/12">
+        <div v-if="!leaving" class="w-2/12">
           <v-img
             :src="mod.icon_url"
             max-height="64"
@@ -36,10 +36,72 @@
       </transition>
     </article>
     <v-divider class="mt-2 mb-4" />
-    <div class="mod-info ma-4">
-      <!-- eslint-disable-next-line vue/no-v-html sanitised using DOMPurify -->
-      <div v-html="desc" />
-    </div>
+
+    <v-tabs v-if="!leaving" color="secondary" class="mt-auto flex flex-grow flex-col">
+      <v-tab href="#desc">
+        {{ $t('pages.mod.tabs.description') }}
+      </v-tab>
+      <v-tab href="#mods">
+        {{ $t('pages.mod.tabs.versions') }}
+      </v-tab>
+
+      <v-tab-item id="desc" key="desc" class="flex-grow">
+        <div class="mod-info ma-4">
+          <!-- eslint-disable-next-line vue/no-v-html sanitised using DOMPurify -->
+          <div v-html="desc" />
+        </div>
+      </v-tab-item>
+      <v-tab-item id="mods" key="mods">
+        <v-select
+          v-model="versionFilter"
+          :items="supportedVersions"
+          class="ml-3 mr-3 mt-3"
+          label="filter versions"
+          clearable
+          outlined
+        />
+
+        <div
+          v-if="!useList"
+          class="grid
+          sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2
+          justify-center mt-4 ml-3"
+        >
+          <transition
+            v-for="(version) in filteredVersions"
+            :key="version.id"
+            name="slide-x-transition"
+            appear
+            duration="100"
+          >
+            <v-hover>
+              <template #default="{ hover }">
+                <v-card
+                  v-if="!leaving"
+                  rounded="md"
+                  class="version-card"
+                  :elevation="hover ? '10' : '0'"
+                  color="#1a1a1a"
+                >
+                  <v-card-title class="mb-2">
+                    <p class="text-center w-full">{{ version.name }}</p>
+                  </v-card-title>
+                  <v-card-subtitle class="text-center">
+                    id: {{ version.id }}
+                  </v-card-subtitle>
+                  <v-card-text class="text-center">
+                    for minecraft {{ version.game_versions.join(', ') }}
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn block>install</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-hover>
+          </transition>
+        </div>
+      </v-tab-item>
+    </v-tabs>
   </div>
 </template>
 
@@ -48,21 +110,58 @@ import marked from 'marked'
 import DOMPurify from 'dompurify'
 import { getModule } from 'vuex-module-decorators'
 import Mod from '../../../../../types/Mod'
+import ModVersion from '../../../../../types/ModVersion'
 import InstancesModule from '~/store/instances'
+import UiModule from '~/store/ui'
+
 export default {
+  beforeRouteLeave (_, _2, next) {
+    this.leaving = true
+    setTimeout(() => {
+      next()
+    }, 100)
+  },
   data () {
     return {
       mod: {} as Mod,
       leaving: false,
       desc: '',
-      instance: getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id)
+      instance: getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id),
+      uiStore: getModule(UiModule, this.$store),
+      // non filtered, for caching purposes
+      versions: [] as ModVersion[],
+      versionFilter: '',
+      supportedVersions: [] as string[],
+      filteredVersions: [] as ModVersion[]
     }
   },
   async fetch () {
-    this.mod = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}`) as Mod
+    this.mod = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}`)
+    this.versions = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}/version`)
+    this.filteredVersions = this.versions
+
+    // we use spread syntax with a set to avoid duplicate minecraft versions
+    this.supportedVersions = [...new Set(this.versions.map(val => val.game_versions).flat())]
+
+    // turn markdown -> html and purify/sanitize it
     this.desc = marked(await this.$axios.$get(this.mod?.body_url), {
       sanitizer: html => DOMPurify.sanitize(html)
     })
+  },
+  computed: {
+    useList () {
+      return this.uiStore.listMode
+    }
+  },
+  watch: {
+    versionFilter () {
+      // when the filter updates actaully filter results
+      // incase filter is empty we just set it to all versions
+      this.filteredVersions = this.versionFilter
+
+        ? this.versions.filter(v => v.game_versions.includes(this.versionFilter))
+        : this.versions
+    }
   }
 }
 </script>
@@ -87,5 +186,9 @@ export default {
     }
   }
 }
-</style>
+
+.version-card {
+  position: relative
+  padding-bottom: 5px !important
+}
 </style>
