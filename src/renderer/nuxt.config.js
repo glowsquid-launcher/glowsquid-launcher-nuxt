@@ -19,7 +19,8 @@ module.exports = {
 
   ],
   modules: [
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/toast'
   ],
   buildModules: [
     '@nuxtjs/vuetify',
@@ -117,5 +118,8 @@ module.exports = {
         })
       ]
     }
+  },
+  toast: {
+    position: 'top-right'
   }
 }

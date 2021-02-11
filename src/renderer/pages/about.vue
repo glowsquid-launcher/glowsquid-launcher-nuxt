@@ -21,7 +21,10 @@ export default {
   },
   methods: {
     toast () {
-      alert('not implemented')
+      this.$toast.show('yes', {
+        icon: 'info',
+        duration: 1500
+      })
     }
   }
 }

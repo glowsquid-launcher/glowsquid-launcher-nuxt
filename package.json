@@ -79,6 +79,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.12.5",
+    "@nuxtjs/toast": "^3.3.1",
     "@types/node": "14.14.22",
     "discord-rpc": "^3.1.4",
     "dompurify": "^2.2.6",
@@ -87,7 +88,6 @@
     "minecraft-launcher-core": "Suyashtnt/MinecraftLauncher-core#better-ts",
     "nuxt-i18n": "^6.18.0",
     "shelljs": "^0.8.4",
-    "vuetify-toast-snackbar": "^0.6.1",
     "vuex": "^3.6.2",
     "vuex-module-decorators": "^1.0.1"
   },
