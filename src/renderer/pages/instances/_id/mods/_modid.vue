@@ -79,7 +79,7 @@
                 <v-card
                   v-if="!leaving"
                   rounded="md"
-                  class="mb-2 card-outter"
+                  class="version-card"
                   :elevation="hover ? '10' : '0'"
                   color="#1a1a1a"
                 >
@@ -92,6 +92,9 @@
                   <v-card-text class="text-center">
                     for minecraft {{ version.game_versions.join(', ') }}
                   </v-card-text>
+                  <v-card-actions>
+                    <v-btn block>install</v-btn>
+                  </v-card-actions>
                 </v-card>
               </template>
             </v-hover>
@@ -183,5 +186,9 @@ export default {
     }
   }
 }
-</style>
+
+.version-card {
+  position: relative
+  padding-bottom: 5px !important
+}
 </style>
