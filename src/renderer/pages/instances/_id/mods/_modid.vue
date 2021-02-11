@@ -52,7 +52,15 @@
         </div>
       </v-tab-item>
       <v-tab-item id="mods" key="mods">
-        <v-select v-model="versionFilter" :items="supportedVersions" clearable class="ml-3 mr-3" />
+        <v-select
+          v-model="versionFilter"
+          :items="supportedVersions"
+          class="ml-3 mr-3 mt-3"
+          label="filter versions"
+          clearable
+          outlined
+        />
+
         <div
           v-if="!useList"
           class="grid
@@ -117,6 +125,7 @@ export default {
       desc: '',
       instance: getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id),
       uiStore: getModule(UiModule, this.$store),
+      // non filtered, for caching purposes
       versions: [] as ModVersion[],
       versionFilter: '',
       supportedVersions: [] as string[],
@@ -127,8 +136,11 @@ export default {
     this.mod = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}`)
     this.versions = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}/version`)
     this.filteredVersions = this.versions
+
+    // we use spread syntax with a set to avoid duplicate minecraft versions
     this.supportedVersions = [...new Set(this.versions.map(val => val.game_versions).flat())]
-    console.log(this.supportedVersions)
+
+    // turn markdown -> html and purify/sanitize it
     this.desc = marked(await this.$axios.$get(this.mod?.body_url), {
       sanitizer: html => DOMPurify.sanitize(html)
     })
@@ -140,7 +152,10 @@ export default {
   },
   watch: {
     versionFilter () {
+      // when the filter updates actaully filter results
+      // incase filter is empty we just set it to all versions
       this.filteredVersions = this.versionFilter
+
         ? this.versions.filter(v => v.game_versions.includes(this.versionFilter))
         : this.versions
     }
