@@ -86,7 +86,11 @@ module.exports = {
       hint: 'You can type the mod name, author and category here'
     },
     mod: {
-      install: 'Install'
+      install: 'Install',
+      tabs: {
+        description: 'Description',
+        versions: 'Versions'
+      }
     }
   }
 }

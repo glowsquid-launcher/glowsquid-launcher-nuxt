@@ -51,7 +51,42 @@
           <div v-html="desc" />
         </div>
       </v-tab-item>
-      <v-tab-item id="mods" key="mods" />
+      <v-tab-item id="mods" key="mods">
+        <div
+          v-if="!useList"
+          class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 justify-center mt-4 ml-3"
+        >
+          <transition
+            v-for="(version) in mod.versions"
+            :key="version"
+            name="slide-x-transition"
+            appear
+            duration="100"
+          >
+            <v-hover>
+              <template #default="{ hover }">
+                <v-card
+                  v-if="!leaving"
+                  rounded="md"
+                  class="mb-2 card-outter"
+                  :elevation="hover ? '10' : '0'"
+                  color="#1a1a1a"
+                >
+                  <v-card-title class="mb-2">
+                    <p class="text-center w-full">{{ version }}</p>
+                  </v-card-title>
+                  <v-card-subtitle class="text-center">
+                    test
+                  </v-card-subtitle>
+                  <v-card-text class="text-center">
+                    e
+                  </v-card-text>
+                </v-card>
+              </template>
+            </v-hover>
+          </transition>
+        </div>
+      </v-tab-item>
     </v-tabs>
   </div>
 </template>
@@ -62,6 +97,7 @@ import DOMPurify from 'dompurify'
 import { getModule } from 'vuex-module-decorators'
 import Mod from '../../../../../types/Mod'
 import InstancesModule from '~/store/instances'
+import UiModule from '~/store/ui'
 export default {
   beforeRouteLeave (_, _2, next) {
     this.leaving = true
@@ -74,7 +110,8 @@ export default {
       mod: {} as Mod,
       leaving: false,
       desc: '',
-      instance: getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id)
+      instance: getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id),
+      uiStore: getModule(UiModule, this.$store)
     }
   },
   async fetch () {
@@ -82,6 +119,11 @@ export default {
     this.desc = marked(await this.$axios.$get(this.mod?.body_url), {
       sanitizer: html => DOMPurify.sanitize(html)
     })
+  },
+  computed: {
+    useList () {
+      return this.uiStore.listMode
+    }
   }
 }
 </script>
