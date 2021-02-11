@@ -42,10 +42,11 @@ const macOS = {
 }
 
 module.exports = {
-  asar: false,
-  productName: 'My browser',
-  appId: 'org.michalzarach.my-browser',
-  artifactName: 'my-browser-${version}.${ext}',
+  asar: true,
+  productName: 'glowsquid',
+  appId: 'com.tnt-man-inc.glowsquid.glowsquid-launcher',
+  // eslint-disable-next-line no-template-curly-in-string
+  artifactName: 'glowsquid-${version}.${ext}',
   directories: {
     output: 'build'
   },
