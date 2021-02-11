@@ -37,7 +37,7 @@
     </article>
     <v-divider class="mt-2 mb-4" />
 
-    <v-tabs v-if="!leaving" color="secondary" class="mt-4 mt-auto flex flex-grow flex-col">
+    <v-tabs v-if="!leaving" color="secondary" class="mt-auto flex flex-grow flex-col">
       <v-tab href="#desc">
         {{ $t('pages.mod.tabs.description') }}
       </v-tab>
@@ -52,13 +52,16 @@
         </div>
       </v-tab-item>
       <v-tab-item id="mods" key="mods">
+        <v-select v-model="versionFilter" :items="supportedVersions" clearable class="ml-3 mr-3" />
         <div
           v-if="!useList"
-          class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 justify-center mt-4 ml-3"
+          class="grid
+          sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2
+          justify-center mt-4 ml-3"
         >
           <transition
-            v-for="(version) in mod.versions"
-            :key="version"
+            v-for="(version) in filteredVersions"
+            :key="version.id"
             name="slide-x-transition"
             appear
             duration="100"
@@ -73,13 +76,13 @@
                   color="#1a1a1a"
                 >
                   <v-card-title class="mb-2">
-                    <p class="text-center w-full">{{ version }}</p>
+                    <p class="text-center w-full">{{ version.name }}</p>
                   </v-card-title>
                   <v-card-subtitle class="text-center">
-                    test
+                    id: {{ version.id }}
                   </v-card-subtitle>
                   <v-card-text class="text-center">
-                    e
+                    for minecraft {{ version.game_versions.join(', ') }}
                   </v-card-text>
                 </v-card>
               </template>
@@ -96,8 +99,10 @@ import marked from 'marked'
 import DOMPurify from 'dompurify'
 import { getModule } from 'vuex-module-decorators'
 import Mod from '../../../../../types/Mod'
+import ModVersion from '../../../../../types/ModVersion'
 import InstancesModule from '~/store/instances'
 import UiModule from '~/store/ui'
+
 export default {
   beforeRouteLeave (_, _2, next) {
     this.leaving = true
@@ -111,11 +116,19 @@ export default {
       leaving: false,
       desc: '',
       instance: getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id),
-      uiStore: getModule(UiModule, this.$store)
+      uiStore: getModule(UiModule, this.$store),
+      versions: [] as ModVersion[],
+      versionFilter: '',
+      supportedVersions: [] as string[],
+      filteredVersions: [] as ModVersion[]
     }
   },
   async fetch () {
-    this.mod = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}`) as Mod
+    this.mod = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}`)
+    this.versions = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}/version`)
+    this.filteredVersions = this.versions
+    this.supportedVersions = [...new Set(this.versions.map(val => val.game_versions).flat())]
+    console.log(this.supportedVersions)
     this.desc = marked(await this.$axios.$get(this.mod?.body_url), {
       sanitizer: html => DOMPurify.sanitize(html)
     })
@@ -123,6 +136,13 @@ export default {
   computed: {
     useList () {
       return this.uiStore.listMode
+    }
+  },
+  watch: {
+    versionFilter () {
+      this.filteredVersions = this.versionFilter
+        ? this.versions.filter(v => v.game_versions.includes(this.versionFilter))
+        : this.versions
     }
   }
 }
