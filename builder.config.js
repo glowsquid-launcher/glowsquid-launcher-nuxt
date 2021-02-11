@@ -15,7 +15,8 @@ const windowsOS = {
 const linuxOS = {
   linux: {
     icon: ICONS_DIR,
-    target: 'deb'
+    target: 'deb',
+    category: 'games'
   }
 }
 
@@ -48,7 +49,7 @@ module.exports = {
   // eslint-disable-next-line no-template-curly-in-string
   artifactName: 'glowsquid-${version}.${ext}',
   directories: {
-    output: 'build'
+    output: 'dist'
   },
   // default files: https://www.electron.build/configuration/contents
   files: [
