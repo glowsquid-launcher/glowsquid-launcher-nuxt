@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     toast () {
-      this.$toast('yes')
+      alert('not implemented')
     }
   }
 }
