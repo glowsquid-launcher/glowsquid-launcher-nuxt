@@ -120,6 +120,8 @@ module.exports = {
     }
   },
   toast: {
-    position: 'top-right'
+    position: 'top-right',
+    iconPack: 'material',
+    duration: 1500
   }
 }
