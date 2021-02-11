@@ -6,7 +6,7 @@
         appear
         duration="100"
       >
-        <div class="w-2/12">
+        <div v-if="!leaving" class="w-2/12">
           <v-img
             :src="mod.icon_url"
             max-height="64"
@@ -36,10 +36,23 @@
       </transition>
     </article>
     <v-divider class="mt-2 mb-4" />
-    <div class="mod-info ma-4">
-      <!-- eslint-disable-next-line vue/no-v-html sanitised using DOMPurify -->
-      <div v-html="desc" />
-    </div>
+
+    <v-tabs v-if="!leaving" color="secondary" class="mt-4 mt-auto flex flex-grow flex-col">
+      <v-tab href="#desc">
+        {{ $t('pages.mod.tabs.description') }}
+      </v-tab>
+      <v-tab href="#mods">
+        {{ $t('pages.mod.tabs.versions') }}
+      </v-tab>
+
+      <v-tab-item id="desc" key="desc" class="flex-grow">
+        <div class="mod-info ma-4">
+          <!-- eslint-disable-next-line vue/no-v-html sanitised using DOMPurify -->
+          <div v-html="desc" />
+        </div>
+      </v-tab-item>
+      <v-tab-item id="mods" key="mods" />
+    </v-tabs>
   </div>
 </template>
 
@@ -50,6 +63,12 @@ import { getModule } from 'vuex-module-decorators'
 import Mod from '../../../../../types/Mod'
 import InstancesModule from '~/store/instances'
 export default {
+  beforeRouteLeave (_, _2, next) {
+    this.leaving = true
+    setTimeout(() => {
+      next()
+    }, 100)
+  },
   data () {
     return {
       mod: {} as Mod,
