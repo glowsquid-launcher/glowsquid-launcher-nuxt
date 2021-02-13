@@ -1,20 +1,16 @@
 .v-snack__content {
- @apply grid grid-cols-4;
+  @apply grid grid-cols-4;
 }
 
 .vts__message {
   @apply col-span-3 mr-auto;
+
+  div {
+    color: var(--v-secondary--text-base) !important;
+  }
 }
 
-.vts__message div {
-  color: var(--v-secondary--text-base) !important;
-}
-
-.v-btn__content {
-  color: var(--v-secondary--text-base) !important;
-}
-
-a {
+.v-btn__content, a {
   color: var(--v-secondary--text-base) !important;
 }
 
@@ -25,16 +21,19 @@ a {
 ::-webkit-scrollbar {
   width: 10px;
 }
-  ::-webkit-scrollbar-track {
+
+::-webkit-scrollbar-track {
   background: var(--v-primary-base);
 }
-  ::-webkit-scrollbar-thumb {
+
+::-webkit-scrollbar-thumb {
   background: var(--v-secondary-base);
   border-radius: 10px;
+
+  &:hover {
+    background: #555;
+  }
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #555; 
-} 
 
 * {
   transition-duration: .3s !important;

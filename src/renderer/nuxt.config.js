@@ -8,7 +8,7 @@ const plugin = require('tailwindcss/plugin')
 
 module.exports = {
   ssr: false,
-  css: ['@/assets/extra.css', '@/assets/toast.scss'],
+  css: ['@/assets/extra.scss', '@/assets/toast.scss'],
   head: {
     title: 'glowsquid-next',
     meta: [{ charset: 'utf-8' }]
