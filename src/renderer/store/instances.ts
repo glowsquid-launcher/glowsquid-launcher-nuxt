@@ -8,6 +8,7 @@ import { remote } from 'electron'
 import axios from 'axios'
 import FabricLoaderVersion from '@/../types/FabricLoaderVersion'
 import FabricVersion from '@/../types/FabricVersion'
+import { Store } from 'vuex/types/index'
 import UiModule from './ui'
 import Modpack from '~/../types/Modpack'
 import ModFile from '~/../types/ModFile'
@@ -20,7 +21,8 @@ type AddInstanceType = {
     min: string,
     max: string
   },
-  assetRoot?: string
+  assetRoot?: string,
+  store: Store<any>
 }
 
 @Module({
@@ -50,7 +52,7 @@ export default class InstancesModule extends VuexModule {
   }
 
    @Action
-  async ADD_INSTANCE ({ name, fabricLoader, fabricLoaderVersion, ram, assetRoot }: AddInstanceType, store: Store<any>) {
+  async ADD_INSTANCE ({ name, fabricLoader, fabricLoaderVersion, ram, assetRoot, store }: AddInstanceType) {
     const uiStore = getModule(UiModule, store)
     const version: Modpack = {
       name,

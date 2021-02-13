@@ -8,7 +8,7 @@ const plugin = require('tailwindcss/plugin')
 
 module.exports = {
   ssr: false,
-  css: ['@/assets/extra.css'],
+  css: ['@/assets/extra.scss', '@/assets/toast.scss'],
   head: {
     title: 'glowsquid-next',
     meta: [{ charset: 'utf-8' }]
@@ -19,7 +19,8 @@ module.exports = {
 
   ],
   modules: [
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/toast'
   ],
   buildModules: [
     '@nuxtjs/vuetify',
@@ -84,7 +85,8 @@ module.exports = {
     },
     icons: {
       iconfont: 'mdi'
-    }
+    },
+    treeShake: true
   },
   tailwindcss: {
     config: {
@@ -117,5 +119,11 @@ module.exports = {
         })
       ]
     }
+  },
+  toast: {
+    position: 'top-right',
+    iconPack: 'mdi',
+    duration: 1500,
+    containerClass: 'toasted-container'
   }
 }

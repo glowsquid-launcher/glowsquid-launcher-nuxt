@@ -1,7 +1,8 @@
 <template>
   <div>
     <h1 class="text-h4 text-center"> {{ $t('pages.about.title') }} </h1>
-    <v-btn @click="toast">
+    <v-slider v-model="dur" min="700" max="5000" label="duration" step="100" thumb-label ticks />
+    <v-btn class="elevation-16" @click="toast">
       {{ $t('pages.about.toast') }}
     </v-btn>
   </div>
@@ -10,6 +11,11 @@
 <script lang="ts">
 import { ipcRenderer } from 'electron'
 export default {
+  data () {
+    return {
+      dur: 1000
+    }
+  },
   mounted () {
     ipcRenderer.send('updatePresence', {
       details: 'testing stuff',
@@ -21,7 +27,10 @@ export default {
   },
   methods: {
     toast () {
-      alert('not implemented')
+      this.$toast.show('yes', {
+        icon: 'information',
+        duration: this.dur
+      })
     }
   }
 }

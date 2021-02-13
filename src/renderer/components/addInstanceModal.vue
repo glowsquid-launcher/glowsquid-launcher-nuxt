@@ -197,11 +197,7 @@ export default {
       get () {
         return this.uiStore.addInstanceVisible
       },
-      async set (val) {
-        this.versions = await this.$axios.$get('https://meta.fabricmc.net/v2/versions/game')
-        this.version = (await this.$axios.$get('https://meta.fabricmc.net/v2/versions/game')).filter(v => v.stable)[0]
-        this.loaderVersions = await this.$axios.$get('https://meta.fabricmc.net/v2/versions/loader')
-        this.loaderVersion = await this.$axios.$get('https://meta.fabricmc.net/v2/versions/loader')[0]
+      set (val) {
         if (val === false) this.uiStore.TOGGLE_ADD_INSTANCE_MODAL()
       }
     },
@@ -216,6 +212,14 @@ export default {
       ]
     }
   },
+  watch: {
+    async visible () {
+      this.versions = await this.$axios.$get('https://meta.fabricmc.net/v2/versions/game')
+      this.version = (await this.$axios.$get('https://meta.fabricmc.net/v2/versions/game')).filter(v => v.stable)[0]
+      this.loaderVersions = await this.$axios.$get('https://meta.fabricmc.net/v2/versions/loader')
+      this.loaderVersion = await this.$axios.$get('https://meta.fabricmc.net/v2/versions/loader')[0]
+    }
+  },
   methods: {
     addInstance () {
       this.instanceStore.ADD_INSTANCE({
@@ -223,8 +227,12 @@ export default {
         fabricLoader: this.version,
         fabricLoaderVersion: this.loaderVersion,
         ram: this.ram,
-        assetRoot: this.assetRoot ? this.assetRoot : undefined
-      }, this.$store).catch(err => { this.error = err })
+        assetRoot: this.assetRoot ? this.assetRoot : undefined,
+        store: this.$store
+      })
+        .catch(err => { this.error = err })
+        .then(() => this.$toast.success(`successfully added ${this.name} to your instances`))
+        .then(() => this.visible === false)
     }
   }
 }
