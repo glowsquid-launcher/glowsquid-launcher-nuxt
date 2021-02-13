@@ -8,7 +8,7 @@ const plugin = require('tailwindcss/plugin')
 
 module.exports = {
   ssr: false,
-  css: ['@/assets/extra.css'],
+  css: ['@/assets/extra.css', '@/assets/toast.scss'],
   head: {
     title: 'glowsquid-next',
     meta: [{ charset: 'utf-8' }]
@@ -85,7 +85,8 @@ module.exports = {
     },
     icons: {
       iconfont: 'mdi'
-    }
+    },
+    treeShake: true
   },
   tailwindcss: {
     config: {
@@ -121,7 +122,8 @@ module.exports = {
   },
   toast: {
     position: 'top-right',
-    iconPack: 'material',
-    duration: 1500
+    iconPack: 'mdi',
+    duration: 1500,
+    containerClass: 'toasted-container'
   }
 }
