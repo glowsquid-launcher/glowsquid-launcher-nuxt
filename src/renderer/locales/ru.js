@@ -63,7 +63,7 @@ module.exports = {
     },
     instances: {
       search: 'Поиск',
-      status: 'Текущий статус: Загрузка {download} | Тип: {type} | {percent}% скачено',
+      status: 'Загрузка {download} | Тип: {type}',
       launch: 'запуск',
       moreInfo: 'Подробнее',
       settings: 'Настройки(Удаляет сборку)',
@@ -71,7 +71,7 @@ module.exports = {
       fabricVersion: 'Версия Fabric loader: <span class="font-bold">{version}</span>'
     },
     instance: {
-      status: 'Текущий статус: Загрузка {download} | Тип: {type} | {percent}% скачено',
+      status: 'Загрузка {download} | Тип: {type}',
       addMods: 'Добавить моды',
       settings: 'Настройки',
       tabs: {
