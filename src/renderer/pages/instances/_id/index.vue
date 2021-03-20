@@ -9,13 +9,22 @@
         <div v-if="!leaving" class="w-10/12">
           <h1 class="text-xl text-center mb-2">{{ instance.name }}</h1>
           <h2 class="text-md text-center italic">{{ instance.summary }}</h2>
-          <p v-if="downloadState" class="text-sm text-center">
-            {{ $t('pages.instance.status', {
-              download: downloadState.name,
-              type: downloadState.type,
-              percent: Math.round(downloadState.current / downloadState.total * 100)
-            }) }}
-          </p>
+          <div v-if="downloadState" class="flex flex-row justify-between align-middle">
+            <p>
+              {{ $t('pages.instance.status', {
+                download: downloadState.name,
+                type: downloadState.type
+              }) }}
+            </p>
+
+            <v-progress-linear
+              height="55px"
+              class="mr-3 self-center"
+              color="secondary"
+              background-color="primary"
+              :value="downloadState.current / downloadState.total * 100"
+            />
+          </div>
         </div>
       </transition>
       <transition
@@ -37,7 +46,7 @@
       </transition>
     </article>
     <transition name="fade-transition" appear duration="100">
-      <v-tabs v-if="!leaving" color="secondary" class="mt-4 mt-auto flex flex-grow flex-col">
+      <v-tabs v-if="!leaving" color="secondary" class="mt-auto flex flex-grow flex-col">
         <v-tab href="#desc">
           {{ $t('pages.instance.tabs.description') }}
         </v-tab>
@@ -83,7 +92,7 @@ export default {
     desc () {
       return marked(this.instance?.description, {
         sanitize: true,
-        sanitizer: html => DOMPurify.sanitize(html)
+        sanitizer: DOMPurify.sanitize
       })
     }
   },

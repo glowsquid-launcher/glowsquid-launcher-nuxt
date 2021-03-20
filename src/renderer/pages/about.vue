@@ -28,7 +28,7 @@ export default {
   methods: {
     toast () {
       this.$toast.show('yes', {
-        icon: 'information',
+        icon: 'Information',
         duration: this.dur
       })
     }

@@ -63,7 +63,7 @@ module.exports = {
     },
     instances: {
       search: 'Search',
-      status: 'Current Status: Downloading {download} | Type: {type} | {percent}% Downloaded',
+      status: 'Downloading {download} | Type: {type}',
       launch: 'launch',
       moreInfo: 'More info',
       settings: 'Settings(Deletes instances rn)',
@@ -71,7 +71,7 @@ module.exports = {
       fabricVersion: 'Fabric loader version: <span class="font-bold">{version}</span>'
     },
     instance: {
-      status: 'Current Status: Downloading {download} | Type: {type} | {percent}% Downloaded',
+      status: 'Downloading {download} | Type: {type}',
       addMods: 'Add mods',
       settings: 'Settings',
       tabs: {

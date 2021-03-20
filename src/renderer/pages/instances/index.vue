@@ -24,13 +24,6 @@
         </v-btn>
       </v-toolbar>
     </transition>
-    <div v-if="downloadState">
-      {{ $t('pages.instances.status', {
-        download: downloadState.name,
-        type: downloadState.type,
-        percent: Math.round(downloadState.current / downloadState.total * 100)
-      }) }}
-    </div>
     <div
       v-if="!useList"
       class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 justify-center mt-4 ml-3"
@@ -67,9 +60,16 @@
                   version: instance.dependencies['fabric-loader']
                 })"
                 />
-              </v-card-subtitle>
-              <v-card-text class="text-center">
                 {{ instance.summary }}
+              </v-card-subtitle>
+              <v-card-text v-if="downloadState && selectedInstance == instance">
+                {{ $t('pages.instances.status', {
+                  download: downloadState.name,
+                  type: downloadState.type
+                }) }}
+                <v-progress-linear
+                  :value="downloadState.current / downloadState.total * 100"
+                />
               </v-card-text>
             </v-card>
           </template>

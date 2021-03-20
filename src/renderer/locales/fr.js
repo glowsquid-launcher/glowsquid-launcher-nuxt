@@ -55,7 +55,7 @@ module.exports = {
   },
   pages: {
     home: {
-      text: 'Bienvenue dans 🅱️lowsquid, le launcher Minecraft fait pour Fabric et fonctionnant avec Modrinth'
+      text: 'Bienvenue dans glowsquid, le launcher Minecraft fait pour Fabric et fonctionnant avec Modrinth'
     },
     about: {
       title: 'Page de test, rien à voir ici. :/',
@@ -63,7 +63,7 @@ module.exports = {
     },
     instances: {
       search: 'Rechercher',
-      status: 'État: En train de télécharger {download} | Type: {type} | {percent}% téléchargé.',
+      status: 'En train de télécharger {download} | Type: {type}',
       launch: 'Lancer',
       moreInfo: 'Plus d\'infos',
       settings: 'Paramètres (Supprime les instances)',
@@ -71,7 +71,7 @@ module.exports = {
       fabricVersion: 'Version de Fabric : <span class="font-bold">{version}</span>'
     },
     instance: {
-      status: 'État: En train de télécharger {download} | Type: {type} | {percent}% téléchargé.',
+      status: 'En train de télécharger {download} | Type: {type}',
       addMods: 'Ajouter des mods',
       settings: 'Paramètres',
       tabs: {
