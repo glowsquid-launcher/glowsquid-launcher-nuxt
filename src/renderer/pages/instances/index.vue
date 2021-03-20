@@ -68,7 +68,7 @@
                   type: downloadState.type
                 }) }}
                 <v-progress-linear
-                  :value="Math.round(downloadState.current / downloadState.total * 100)"
+                  :value="downloadState.current / downloadState.total * 100"
                 />
               </v-card-text>
             </v-card>

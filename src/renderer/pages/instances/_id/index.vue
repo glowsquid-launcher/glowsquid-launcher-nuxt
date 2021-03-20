@@ -18,11 +18,10 @@
             </p>
 
             <v-progress-linear
-              style="height: 4px; width: 55%;"
+              height="55px"
               class="mr-3 self-center"
               color="secondary"
               background-color="primary"
-
               :value="downloadState.current / downloadState.total * 100"
             />
           </div>
@@ -93,7 +92,7 @@ export default {
     desc () {
       return marked(this.instance?.description, {
         sanitize: true,
-        sanitizer: html => DOMPurify.sanitize(html)
+        sanitizer: DOMPurify.sanitize
       })
     }
   },
