@@ -110,7 +110,8 @@ export default {
       this.instanceStore.DOWNLOAD_MOD({
         instance: this.instance!!,
         mod: modVersions[0].files[0],
-        deps: modVersions[0].dependencies
+        deps: modVersions[0].dependencies,
+        id: modVersions[0].mod_id
       })
     }
   }
