@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
-import { promises as fs, existsSync } from 'fs'
+import { promises as fs, existsSync, createWriteStream } from 'fs'
+import { get } from 'https'
 import * as path from 'path'
 import { store } from '@/plugins/store'
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
@@ -11,6 +12,7 @@ import FabricVersion from '@/../types/FabricVersion'
 import { Store } from 'vuex/types/index'
 import UiModule from './ui'
 import Modpack from '~/../types/Modpack'
+import ModVersion, { File } from '~/../types/ModVersion'
 import ModFile from '~/../types/ModFile'
 
 type AddInstanceType = {
@@ -47,7 +49,7 @@ export default class InstancesModule extends VuexModule {
   }
 
   @Mutation
-  PUSH_MOD (mod: ModFile, instance: Modpack) {
+  PUSH_MOD ({ mod, instance }: {mod: ModFile, instance: Modpack}) {
     this.instances[this.instances.indexOf(instance)].files.push(mod)
   }
 
@@ -112,8 +114,44 @@ export default class InstancesModule extends VuexModule {
     }
   }
 
-  // @Action
-  // async DOWNLOAD_MOD(mod: ModFile, instance: Modpack) {
+  @Action
+  async DOWNLOAD_MOD ({ mod, instance, deps, id }: {mod: File, instance: Modpack, deps: string[], id: string}) {
+    console.log(mod, instance)
 
-  // }
+    for (const dep in deps) {
+      const modVersions =
+      // eslint-disable-next-line max-len
+      (await axios.get<ModVersion[]>(`https://api.modrinth.com/api/v1/mod/${dep.replace('local-', '')}/version`))
+        .data
+        .filter(v => v.game_versions.includes(instance.dependencies.minecraft))
+
+      await this.context.dispatch('DOWNLOAD_MOD', {
+        instance,
+        mod: modVersions[0].files[0],
+        deps: modVersions[0].dependencies,
+        id: modVersions[0].mod_id
+      })
+    }
+
+    download(mod.url, path.join(this.userData, 'instances', instance.name, '.minecraft', 'mods', mod.filename), err => {
+      if (!err) {
+        console.log('done downloading')
+      }
+    })
+  }
 }
+
+function download (url: string, dest: string, cb: (err?: string) => void) {
+  const file = createWriteStream(dest)
+
+  get(url, function (response) {
+    response.pipe(file)
+    file.on('finish', function () {
+      file.close()
+      cb()
+    })
+  }).on('error', async function (err) {
+    await fs.unlink(dest)
+    if (cb) cb(err.message)
+  })
+};

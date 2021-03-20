@@ -55,7 +55,9 @@
                 >
                   {{ $t('pages.mods.about') }}
                 </v-btn>
-                <v-btn block>{{ $t('pages.mods.install') }}</v-btn>
+                <v-btn block @click="downloadMod(mod)">
+                  {{ $t('pages.mods.install') }}
+                </v-btn>
               </div>
             </transition>
           </v-card-actions>
@@ -68,7 +70,9 @@
 <script lang="ts">
 import { getModule } from 'vuex-module-decorators'
 import ModList from '../../../../../types/ModList'
+import ModResult from '../../../../../types/ModResult'
 import InstancesModule from '~/store/instances'
+import ModVersion from '~/../types/ModVersion'
 
 export default {
   beforeRouteLeave (_, _2, next) {
@@ -79,6 +83,7 @@ export default {
   },
   data () {
     return {
+      instanceStore: getModule(InstancesModule, this.$store),
       instance: getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id),
       searchQuery: '',
       leaving: false,
@@ -94,9 +99,22 @@ export default {
       // eslint-disable-next-line max-len
       this.modList = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod?${newQuery ? `query=${newQuery}` : ''}&filters=categories=fabric&versions=${this.instance?.dependencies.minecraft}`)
     }
+  },
+  methods: {
+    async downloadMod (mod: ModResult) {
+      const modVersions =
+      // eslint-disable-next-line max-len
+      (await this.$axios.$get<ModVersion[]>(`https://api.modrinth.com/api/v1/mod/${mod.mod_id.replace('local-', '')}/version`))
+        .filter(v => v.game_versions.includes(this.instance!!.dependencies.minecraft))
+
+      this.instanceStore.DOWNLOAD_MOD({
+        instance: this.instance!!,
+        mod: modVersions[0].files[0],
+        deps: modVersions[0].dependencies
+      })
+    }
   }
 }
-
 </script>
 
 <style lang="stylus">
