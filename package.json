@@ -59,7 +59,7 @@
     "husky": "4.3.8",
     "native-ext-loader": "2.3.0",
     "nuxt": "2.14.12",
-    "postcss": "7.0.35",
+    "postcss": "7.0.36",
     "require-extension-hooks": "0.3.3",
     "require-extension-hooks-babel": "1.0.0",
     "require-extension-hooks-vue": "3.0.0",
