@@ -51,7 +51,7 @@ export default Vue.extend({
   },
   computed: {
     dialog: {
-      get () {
+      get (): boolean {
         return this.uiStore.settingsVisible
       },
       set (val) {
@@ -59,7 +59,7 @@ export default Vue.extend({
       }
     },
     useGrid: {
-      get () {
+      get (): boolean {
         return this.uiStore.listMode
       },
       set (val) {

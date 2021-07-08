@@ -1,4 +1,4 @@
-//@ts-nocheck
+// @ts-nocheck
 import path from 'path'
 import BrowserWinHandler from './BrowserWinHandler.ts'
 const isDev = process.env.NODE_ENV === 'development'

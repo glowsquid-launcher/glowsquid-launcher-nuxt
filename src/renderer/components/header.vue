@@ -89,6 +89,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { getModule } from 'vuex-module-decorators'
+import { IUser } from 'minecraft-launcher-core'
 import UiModule from '~/store/ui'
 import UserModule from '~/store/users'
 
@@ -101,7 +102,7 @@ export default Vue.extend({
     }
   },
   computed: {
-    accounts () {
+    accounts (): IUser[] {
       return this.usersStore.users
     },
     account: {

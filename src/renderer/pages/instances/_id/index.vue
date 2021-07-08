@@ -11,10 +11,12 @@
           <h2 class="text-md text-center italic">{{ instance.summary }}</h2>
           <div v-if="downloadState" class="flex flex-row justify-between align-middle">
             <p>
-              {{ $t('pages.instance.status', {
-                download: downloadState.name,
-                type: downloadState.type
-              }) }}
+              {{
+                $t('pages.instance.status', {
+                  download: downloadState.name,
+                  type: downloadState.type
+                })
+              }}
             </p>
 
             <v-progress-linear
@@ -56,7 +58,7 @@
 
         <v-tab-item id="desc" key="desc" class="flex-grow">
           <!-- eslint-disable-next-line vue/no-v-html we sanitised this using DOMPurify so we know its safe-->
-          <div class="ml-3" v-html="desc" />
+          <div class="ml-3" v-html="desc"/>
         </v-tab-item>
         <v-tab-item id="mods" key="mods">
           yes
@@ -70,11 +72,13 @@
 import marked from 'marked'
 import DOMPurify from 'dompurify'
 import { getModule } from 'vuex-module-decorators'
-import launch from '~/utils/launch'
+import Vue from 'vue'
 import DownloadProgress from '~/../types/DownloadProgress'
 import InstancesModule from '~/store/instances'
+import { typedIpcRenderer } from '~/../types/Ipc'
+import UserModule from '~/store/users'
 
-export default {
+export default Vue.extend({
   beforeRouteLeave (_, _2, next) {
     this.leaving = true
     setTimeout(() => {
@@ -89,8 +93,8 @@ export default {
     }
   },
   computed: {
-    desc () {
-      return marked(this.instance?.description, {
+    desc (): string {
+      return marked(this.instance?.description ?? '', {
         sanitize: true,
         sanitizer: DOMPurify.sanitize
       })
@@ -98,12 +102,18 @@ export default {
   },
   methods: {
     async launch () {
-      const client = await launch(this.instance ? this.instance : null, this.$store)
-      client?.on('download-status', e => { this.downloadState = e })
-      client?.on('data', e => console.log(e))
+      if (this.instance === undefined) return
+
+      await typedIpcRenderer.invoke('LaunchMinecraft', this.instance!!, getModule(UserModule, this.$store).selected)
+      typedIpcRenderer.on('DownloadStatus', (_e, status) => {
+        this.downloadState = status
+        console.log(status)
+      })
+      typedIpcRenderer.on('DownloadProgress', (_e, _progress) => {
+      })
     }
   }
-}
+})
 </script>
 
 <style lang="stylus">

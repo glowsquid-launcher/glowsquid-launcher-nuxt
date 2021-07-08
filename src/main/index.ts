@@ -1,5 +1,5 @@
 /* globals INCLUDE_RESOURCES_PATH */
-//@ts-nocheck
+// @ts-nocheck
 import { app } from 'electron'
 
 /**

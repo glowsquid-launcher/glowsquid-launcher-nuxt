@@ -175,15 +175,17 @@
 </template>
 
 <script lang="ts">
-import launch from '@/utils/launch'
 import { ipcRenderer } from 'electron'
 import Modpack from '@/../types/Modpack'
 import DownloadProgress from '@/../types/DownloadProgress'
 import { getModule } from 'vuex-module-decorators'
+import Vue from 'vue'
+import { typedIpcRenderer } from '../../../types/Ipc'
 import InstancesModule from '~/store/instances'
 import UiModule from '~/store/ui'
+import UserModule from '~/store/users'
 
-export default {
+export default Vue.extend({
   beforeRouteLeave (_, _2, next) {
     this.leaving = true
     setTimeout(() => {
@@ -202,17 +204,17 @@ export default {
   },
   computed: {
     isVisible: {
-      get () {
+      get (): boolean {
         return this.selectedInstance !== null
       },
       set (val) {
         if (val === false) this.selectedInstance = null
       }
     },
-    useList () {
+    useList (): boolean {
       return this.uiStore.listMode
     },
-    instances () {
+    instances (): Modpack[] {
       return this.filter
         ? this.instanceStore.instances.filter(instance => instance.name.includes(this.filter))
         : this.instanceStore.instances
@@ -236,14 +238,16 @@ export default {
       await this.instanceStore.DELETE_INSTANCE(instance)
     },
     async launch (instance: Modpack | null) {
-      const client = await launch(instance, this.$store)
-      client?.on('download-status', e => { this.downloadState = e })
+      if (this.instance === undefined) return
+      await typedIpcRenderer.invoke('LaunchMinecraft', instance!!, getModule(UserModule, this.$store).selected)
+      typedIpcRenderer.on('DownloadStatus', (_e, status) => { this.downloadState = status })
+      typedIpcRenderer.on('DownloadProgress', (_e, _progress) => {})
     },
     addInstance () {
       this.uiStore.TOGGLE_ADD_INSTANCE_MODAL()
     }
   }
-}
+})
 </script>
 
 <style lang="stylus">

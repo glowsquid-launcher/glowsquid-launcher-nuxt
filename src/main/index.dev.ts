@@ -1,4 +1,4 @@
-//@ts-nocheck
+// @ts-nocheck
 import fs from 'fs'
 import path from 'path'
 import { Menu, MenuItem, app } from 'electron'

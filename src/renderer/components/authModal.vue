@@ -81,7 +81,7 @@ export default Vue.extend({
   },
   computed: {
     visible: {
-      get () {
+      get (): boolean {
         return this.uiStore.authModalVisible
       },
       set (value) {
@@ -96,7 +96,7 @@ export default Vue.extend({
     addUser () {
       this.usersStore.ADD_USER({ username: this.email, password: this.password })
         .then(() => {
-          uiStore.TOGGLE_AUTH_MODAL()
+          this.uiStore.TOGGLE_AUTH_MODAL()
           this.error = ''
         })
         .catch(err => {

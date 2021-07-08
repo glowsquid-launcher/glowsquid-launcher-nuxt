@@ -23,7 +23,7 @@
       class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-2"
     >
       <div v-for="mod in modList.hits" :key="mod.mod_id">
-        <v-card height="100%" class="card-outter">
+        <v-card height="100%" class="card-outer">
           <v-card-title>
             <transition name="slide-y-transition" appear duration="100">
               <h1 v-if="!leaving" class="flex flex-row mb-2">
@@ -69,12 +69,13 @@
 
 <script lang="ts">
 import { getModule } from 'vuex-module-decorators'
+import Vue from 'vue'
 import ModList from '../../../../../types/ModList'
 import ModResult from '../../../../../types/ModResult'
 import InstancesModule from '~/store/instances'
 import ModVersion from '~/../types/ModVersion'
 
-export default {
+export default Vue.extend({
   beforeRouteLeave (_, _2, next) {
     this.leaving = true
     setTimeout(() => {
@@ -105,21 +106,29 @@ export default {
       const modVersions =
       // eslint-disable-next-line max-len
       (await this.$axios.$get<ModVersion[]>(`https://api.modrinth.com/api/v1/mod/${mod.mod_id.replace('local-', '')}/version`))
-        .filter(v => v.game_versions.includes(this.instance!!.dependencies.minecraft))
 
-      this.instanceStore.DOWNLOAD_MOD({
+      const filteredVersions = modVersions.filter(v => v.game_versions.some(gameVersion => {
+        if (gameVersion === this.instance!!.dependencies.minecraft) return true
+        const gameVer = gameVersion.split('.')
+        gameVer.pop()
+        return this.instance!!.dependencies.minecraft === gameVer.join('.')
+      }))
+
+      console.log(filteredVersions)
+
+      await this.instanceStore.DOWNLOAD_MOD({
         instance: this.instance!!,
-        mod: modVersions[0].files[0],
-        deps: modVersions[0].dependencies,
+        mod: filteredVersions[0].files[0],
+        deps: filteredVersions[0].dependencies,
         id: modVersions[0].mod_id
       })
     }
   }
-}
+})
 </script>
 
 <style lang="stylus">
-.card-outter {
+.card-outer {
   position: relative
   padding-bottom: 50px
 }

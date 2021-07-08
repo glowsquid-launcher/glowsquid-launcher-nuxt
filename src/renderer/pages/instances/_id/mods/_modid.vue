@@ -109,12 +109,13 @@
 import marked from 'marked'
 import DOMPurify from 'dompurify'
 import { getModule } from 'vuex-module-decorators'
+import Vue from 'vue'
 import Mod from '../../../../../types/Mod'
 import ModVersion from '../../../../../types/ModVersion'
 import InstancesModule from '~/store/instances'
 import UiModule from '~/store/ui'
 
-export default {
+export default Vue.extend({
   beforeRouteLeave (_, _2, next) {
     this.leaving = true
     setTimeout(() => {
@@ -149,7 +150,7 @@ export default {
     })
   },
   computed: {
-    useList () {
+    useList (): boolean {
       return this.uiStore.listMode
     }
   },
@@ -163,7 +164,7 @@ export default {
         : this.versions
     }
   }
-}
+})
 </script>
 
 <style lang="stylus">
