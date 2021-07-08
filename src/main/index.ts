@@ -1,4 +1,5 @@
 /* globals INCLUDE_RESOURCES_PATH */
+//@ts-nocheck
 import { app } from 'electron'
 
 /**
@@ -17,4 +18,4 @@ app.on('window-all-closed', function () {
 })
 
 // Load here all startup windows
-require('./mainWindow')
+import('./mainWindow.ts')

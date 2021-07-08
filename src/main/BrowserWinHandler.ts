@@ -1,14 +1,18 @@
 import { EventEmitter } from 'events'
 import { BrowserWindow, app, ipcMain } from 'electron'
 import * as RPC from 'discord-rpc'
-import Store from 'electron-store'
+import ElectronStore from 'electron-store'
 
 export default class BrowserWinHandler {
+  browserWindow: BrowserWindow
+  _eventEmitter: EventEmitter
+  options: Record<any, any>
+  allowRecreate: boolean
   /**
      * @param [options] {object} - browser window options
      * @param [allowRecreate] {boolean}
      */
-  constructor (options, allowRecreate = true) {
+  constructor(options: Record<any, any>, allowRecreate = true) {
     this._eventEmitter = new EventEmitter()
     this.allowRecreate = allowRecreate
     this.options = options
@@ -16,12 +20,13 @@ export default class BrowserWinHandler {
     this._createInstance()
   }
 
-  _createInstance () {
+  _createInstance() {
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', () => {
-      Store.initRenderer()
+      const store = new ElectronStore();
+
       const client = new RPC.Client({
         transport: 'ipc'
       })
@@ -72,7 +77,7 @@ export default class BrowserWinHandler {
     app.on('activate', () => this._recreate())
   }
 
-  _create () {
+  _create() {
     this.browserWindow = new BrowserWindow(
       {
         ...this.options,
@@ -94,7 +99,7 @@ export default class BrowserWinHandler {
     this._eventEmitter.emit('created')
   }
 
-  _recreate () {
+  _recreate() {
     if (this.browserWindow === null) this._create()
   }
 
@@ -107,7 +112,7 @@ export default class BrowserWinHandler {
      *
      * @param callback {onReadyCallback}
      */
-  onCreated (callback) {
+  onCreated(callback: { (browserWindow: any): void; (browserWindow: any): void; (arg0: BrowserWindow): void }) {
     this._eventEmitter.once('created', () => {
       callback(this.browserWindow)
     })
@@ -117,11 +122,13 @@ export default class BrowserWinHandler {
      *
      * @returns {Promise<BrowserWindow>}
      */
-  created () {
+  created() {
     return new Promise(resolve => {
       this._eventEmitter.once('created', () => {
         resolve(this.browserWindow)
       })
     })
   }
+
+
 }
