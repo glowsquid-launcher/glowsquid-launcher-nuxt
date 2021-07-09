@@ -61,8 +61,8 @@ export default class BrowserWinHandler {
 
       this._create()
 
-      typedIpcMain.handle('UpdatePresence', (_e, presence) => {
-        client.setActivity({
+      typedIpcMain.handle('UpdatePresence', async (_e, presence) => {
+        await client.setActivity({
           ...prevActivity,
           ...presence
         })
@@ -73,7 +73,7 @@ export default class BrowserWinHandler {
         }
       })
 
-      typedIpcMain.handle('LaunchMinecraft', (_e, modpack, user) => launchMinecraft(modpack, user))
+      typedIpcMain.handle('LaunchMinecraft', async (_e, modpack, user) => await launchMinecraft(modpack, user))
 
       typedIpcMain.handle('GetPath', (_e, name) => { return app.getPath(name) })
     })
@@ -93,7 +93,7 @@ export default class BrowserWinHandler {
           webSecurity: false, // disabled until modrinth's api is public
           nodeIntegration: true, // allow loading modules via the require () function
           devTools: !process.env.SPECTRON, // disable on e2e test environment
-          enableRemoteModule: true
+          enableRemoteModule: false
         }
       }
     )

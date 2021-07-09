@@ -127,8 +127,6 @@ export default Vue.extend({
           'instances', instance.name, 'instance.json'
         )
         const instanceJson: Modpack = JSON.parse(fs.readFileSync(instanceJsonPath).toString())
-        console.log(instanceJson)
-        console.log(hit)
         return instanceJson.files.some(file => file.id === hit.mod_id.replace('local-', ''))
       }
 
@@ -139,8 +137,6 @@ export default Vue.extend({
       ...modList,
       hits: newHits
     }
-
-    console.log(newHits)
   },
   watch: {
     async searchQuery (newQuery) {

@@ -5,11 +5,11 @@ import * as path from 'path'
 import { store } from '@/plugins/store'
 import { Action, getModule, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { mkdir, rm } from 'shelljs'
-import { remote } from 'electron'
 import axios from 'axios'
 import FabricLoaderVersion from '@/../types/FabricLoaderVersion'
 import FabricVersion from '@/../types/FabricVersion'
 import { Store } from 'vuex/types/index'
+import { typedIpcRenderer } from '../../types/Ipc'
 import UiModule from './ui'
 import Modpack from '~/../types/Modpack'
 import ModVersion, { File } from '~/../types/ModVersion'
@@ -34,7 +34,6 @@ type AddInstanceType = {
 })
 export default class InstancesModule extends VuexModule {
   instances: Modpack[] = store.get('instances', [])
-  userData = remote.app.getPath('userData')
 
   @Mutation
   PUSH_INSTANCE (instance: Modpack) {
@@ -55,6 +54,7 @@ export default class InstancesModule extends VuexModule {
 
    @Action
   async ADD_INSTANCE ({ name, fabricLoader, fabricLoaderVersion, ram, assetRoot, store }: AddInstanceType) {
+    const userData = await typedIpcRenderer.invoke('GetPath', 'userData')
     // calculate weather to add .0 or not
     const splitLoader = fabricLoader.version.split('.')
     splitLoader.pop()
@@ -81,15 +81,15 @@ export default class InstancesModule extends VuexModule {
       }
     }
 
-    mkdir('-p', path.join(this.userData, 'instances', name, '.minecraft', 'versions', fabricLoader.version + 'fabric'))
-    mkdir('-p', path.join(this.userData, 'instances', name, '.minecraft', 'mods'))
+    mkdir('-p', path.join(userData, 'instances', name, '.minecraft', 'versions', fabricLoader.version + 'fabric'))
+    mkdir('-p', path.join(userData, 'instances', name, '.minecraft', 'mods'))
 
     const content = JSON.stringify((await axios.get(`https://fabricmc.net/download/technic?yarn=${fabricLoader.version}${fabricLoaderVersion.separator}${fabricLoaderVersion.build}&loader=${fabricLoaderVersion.version}`)).data)
 
     await fs.writeFile(
-      path.join(this.userData, 'instances', name, 'instance.json'),
+      path.join(userData, 'instances', name, 'instance.json'),
       JSON.stringify(version))
-    await fs.writeFile(path.join(this.userData, 'instances', name, '.minecraft', 'versions', fabricLoader.version + 'fabric', fabricLoader.version + 'fabric.json'),
+    await fs.writeFile(path.join(userData, 'instances', name, '.minecraft', 'versions', fabricLoader.version + 'fabric', fabricLoader.version + 'fabric.json'),
       content)
 
     this.context.commit('PUSH_INSTANCE', version)
@@ -98,21 +98,25 @@ export default class InstancesModule extends VuexModule {
 
   @Action
    async REFRESH_INSTANCES () {
+     const userData = await typedIpcRenderer.invoke('GetPath', 'userData')
+     // calculate weather to add .0 or not
      // fs.stat breaks for some reason
-     if (!existsSync(path.join(this.userData, 'instances'))) mkdir('-p', path.join(this.userData, 'instances'))
+     if (!existsSync(path.join(userData, 'instances'))) mkdir('-p', path.join(userData, 'instances'))
 
-     const instancePaths = (await fs.readdir(path.join(this.userData, 'instances'), { withFileTypes: true }))
+     const instancePaths = (await fs.readdir(path.join(userData, 'instances'), { withFileTypes: true }))
        .filter(dirent => dirent.isDirectory())
-       .map(dirent => path.join(this.userData, 'instances', dirent.name, 'instance.json'))
+       .map(dirent => path.join(userData, 'instances', dirent.name, 'instance.json'))
 
-     this.context.commit('READD_INSTANCES', await Promise.all(instancePaths.map(async instancePath =>
+     this.context.commit('RE_ADD_INSTANCES', await Promise.all(instancePaths.map(async instancePath =>
        JSON.parse((await fs.readFile(instancePath)).toString('utf-8'))
      )))
    }
 
   @Action
   async DELETE_INSTANCE (instance: Modpack) {
-    const folderToDelete = path.join(this.userData, 'instances', instance.name)
+    const userData = await typedIpcRenderer.invoke('GetPath', 'userData')
+    // calculate weather to add .0 or not
+    const folderToDelete = path.join(userData, 'instances', instance.name)
     if (existsSync(folderToDelete)) {
       rm('-rf', folderToDelete)
       await this.context.dispatch('REFRESH_INSTANCES')
@@ -121,6 +125,8 @@ export default class InstancesModule extends VuexModule {
 
   @Action
   async DOWNLOAD_MOD ({ mod, instance, deps, id }: {mod: File, instance: Modpack, deps: string[], id: string}) {
+    const userData = await typedIpcRenderer.invoke('GetPath', 'userData')
+    // calculate weather to add .0 or not
     for (const dep in deps) {
       const modVersions =
       // eslint-disable-next-line max-len
@@ -143,7 +149,7 @@ export default class InstancesModule extends VuexModule {
       })
     }
 
-    download(mod.url, path.join(this.userData, 'instances', instance.name, '.minecraft', 'mods', mod.filename), async err => {
+    download(mod.url, path.join(userData, 'instances', instance.name, '.minecraft', 'mods', mod.filename), async err => {
       if (!err) {
         console.log('done downloading, adding to instance.json')
 
@@ -155,7 +161,7 @@ export default class InstancesModule extends VuexModule {
           ]
         }
 
-        const instancePath = path.join(this.userData, 'instances', instance.name, 'instance.json')
+        const instancePath = path.join(userData, 'instances', instance.name, 'instance.json')
 
         const newJson: Modpack = JSON.parse((await fs.readFile(instancePath)).toString())
         newJson.files.push(modFile)

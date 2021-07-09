@@ -31,7 +31,7 @@
         duration="100"
       >
         <div v-if="!leaving" class="ml-auto flex flex-col w-2/12">
-          <v-btn class="mb-2 self-center" color="secondary" :disabled="alreadyInstalled">
+          <v-btn class="mb-2 self-center" color="secondary" :disabled="alreadyInstalled" @click="downloadMod">
             {{ $t('pages.mod.install') }}
           </v-btn>
         </div>
@@ -181,6 +181,28 @@ export default Vue.extend({
 
         ? this.versions.filter(v => v.game_versions.includes(this.versionFilter))
         : this.versions
+    }
+  },
+  methods: {
+    async downloadMod () {
+      const modVersions =
+        // eslint-disable-next-line max-len
+        (await this.$axios.$get<ModVersion[]>(`https://api.modrinth.com/api/v1/mod/${this.mod.mod_id.replace('local-', '')}/version`))
+
+      const filteredVersions = modVersions.filter(v => v.game_versions.some(gameVersion => {
+        if (gameVersion === this.instance!!.dependencies.minecraft) return true
+        // we do the instance version instead as we know it's always 3 `.`s
+        const gameVerNoMinor = this.instance!!.dependencies.minecraft.split('.')
+        gameVerNoMinor.pop()
+        return gameVersion === gameVerNoMinor.join('.')
+      }))
+
+      await this.instanceStore.DOWNLOAD_MOD({
+        instance: this.instance!!,
+        mod: filteredVersions[0].files[0],
+        deps: filteredVersions[0].dependencies,
+        id: modVersions[0].mod_id
+      })
     }
   }
 })
