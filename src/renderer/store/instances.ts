@@ -43,7 +43,7 @@ export default class InstancesModule extends VuexModule {
   }
 
   @Mutation
-  READD_INSTANCES (instances: Modpack[]) {
+  RE_ADD_INSTANCES (instances: Modpack[]) {
     this.instances = instances
     store.set('instances', this.instances)
   }
@@ -116,20 +116,25 @@ export default class InstancesModule extends VuexModule {
 
   @Action
   async DOWNLOAD_MOD ({ mod, instance, deps, id }: {mod: File, instance: Modpack, deps: string[], id: string}) {
-    console.log(mod, instance)
-
     for (const dep in deps) {
       const modVersions =
       // eslint-disable-next-line max-len
       (await axios.get<ModVersion[]>(`https://api.modrinth.com/api/v1/mod/${dep.replace('local-', '')}/version`))
         .data
-        .filter(v => v.game_versions.includes(instance.dependencies.minecraft))
+
+      const filteredVersions = modVersions.filter(v => v.game_versions.some(gameVer => {
+        if (gameVer === instance.dependencies.minecraft) return true
+
+        const gameVerNoMinor = gameVer.split('.')
+        gameVerNoMinor.pop()
+        return instance.dependencies.minecraft === gameVerNoMinor.join('.')
+      }))
 
       await this.context.dispatch('DOWNLOAD_MOD', {
         instance,
-        mod: modVersions[0].files[0],
-        deps: modVersions[0].dependencies,
-        id: modVersions[0].mod_id
+        mod: filteredVersions[0].files[0],
+        deps: filteredVersions[0].dependencies,
+        id: filteredVersions[0].mod_id
       })
     }
 

@@ -1,33 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e25bf89c-4829-4354-8201-aa30cdd92760" name="Changes" comment="refactor: Launch minecraft through IPC calls">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/glowsquid.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/utils/launchMinecraft.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/types/Ipc.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/yarn-error.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/BrowserWinHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/BrowserWinHandler.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/index.dev.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/index.dev.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/mainWindow.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/mainWindow.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/addInstanceModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/addInstanceModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/authModal.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/authModal.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/header.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/header.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/components/settingsDialog.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/components/settingsDialog.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/about.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/about.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/instances/_id/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/instances/_id/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/instances/_id/mods/_modid.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/instances/_id/mods/_modid.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/instances/_id/mods/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/instances/_id/mods/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/instances/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/instances/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+    <list default="true" id="e25bf89c-4829-4354-8201-aa30cdd92760" name="Changes" comment="refactor: launch minecraft through IPC calls">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/store/instances.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/store/instances.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +12,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedIndex" value="1" />
   </component>
   <component name="ProjectId" id="1v2adxcY7pQGgjbxQ0UWx7Tk1gH" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -77,8 +56,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1625762735240</updated>
-      <workItem from="1625762738719" duration="5602000" />
+      <workItem from="1625762738719" duration="7631000" />
     </task>
+    <task id="LOCAL-00001" summary="refactor: launch minecraft through IPC calls">
+      <created>1625768714125</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1625768714125</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -97,7 +84,9 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="refactor: Launch minecraft through IPC calls" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: Launch minecraft through IPC calls" />
+    <MESSAGE value="Refactor: Launch minecraft through IPC calls" />
+    <MESSAGE value="refactor: launch minecraft through IPC calls" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: launch minecraft through IPC calls" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
