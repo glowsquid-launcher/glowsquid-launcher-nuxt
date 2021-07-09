@@ -145,6 +145,8 @@ export default Vue.extend({
   },
   async fetch () {
     const instance = getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id)
+    if (!instance) return
+
     this.mod = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}`)
 
     this.alreadyInstalled = await (async () => {

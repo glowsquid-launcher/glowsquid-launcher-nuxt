@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e25bf89c-4829-4354-8201-aa30cdd92760" name="Changes" comment="refactor: remove all uses of `remote` and disable it">
+    <list default="true" id="e25bf89c-4829-4354-8201-aa30cdd92760" name="Changes" comment="feat: re-enable `webPreferences.webSecurity`&#10;&#10;modrinth's api no longer gives CORS errors yay">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/BrowserWinHandler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/BrowserWinHandler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/pages/instances/_id/mods/_modid.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/instances/_id/mods/_modid.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +34,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/.." />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../ToastyXD" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -68,7 +68,8 @@
       <option name="presentableId" value="Default" />
       <updated>1625762735240</updated>
       <workItem from="1625762738719" duration="16688000" />
-      <workItem from="1625841121318" duration="1032000" />
+      <workItem from="1625841121318" duration="1628000" />
+      <workItem from="1625843625546" duration="38000" />
     </task>
     <task id="LOCAL-00001" summary="refactor: launch minecraft through IPC calls">
       <created>1625768714125</created>
@@ -105,7 +106,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625822360940</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="feat: re-enable `webPreferences.webSecurity`&#10;&#10;modrinth's api no longer gives CORS errors yay">
+      <created>1625842977780</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1625842977780</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -131,7 +139,8 @@
     <MESSAGE value="feat: add being able to add downloaded mods to instance.json" />
     <MESSAGE value="feat: disable install button if mod is already installed" />
     <MESSAGE value="refactor: remove all uses of `remote` and disable it" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: remove all uses of `remote` and disable it" />
+    <MESSAGE value="feat: re-enable `webPreferences.webSecurity`&#10;&#10;modrinth's api no longer gives CORS errors yay" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: re-enable `webPreferences.webSecurity`&#10;&#10;modrinth's api no longer gives CORS errors yay" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
