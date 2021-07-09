@@ -43,8 +43,8 @@ export default class BrowserWinHandler {
         largeImageText: 'Coming not soon™'
       }
 
-      client.on('ready', () => {
-        client.setActivity({
+      client.on('ready', async () => {
+        await client.setActivity({
           details: 'Looking around 👀',
           state: 'Not signed in yet',
           startTimestamp: new Date(),
@@ -57,7 +57,7 @@ export default class BrowserWinHandler {
 
       client.login({
         clientId: '795736067675258891'
-      })
+      }).then(r => r)
 
       this._create()
 
@@ -78,7 +78,7 @@ export default class BrowserWinHandler {
       typedIpcMain.handle('GetPath', (_e, name) => { return app.getPath(name) })
     })
 
-    // On macOS it's common to re-create a window in the app when the
+    // On macOS, it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (!this.allowRecreate) return
     app.on('activate', () => this._recreate())
@@ -90,7 +90,7 @@ export default class BrowserWinHandler {
         ...this.options,
         webPreferences: {
           ...this.options.webPreferences,
-          webSecurity: false, // disabled until modrinth's api is public
+          webSecurity: true,
           nodeIntegration: true, // allow loading modules via the require () function
           devTools: !process.env.SPECTRON, // disable on e2e test environment
           enableRemoteModule: false
@@ -117,7 +117,7 @@ export default class BrowserWinHandler {
 
   /**
      *
-     * @param callback {onReadyCallback}
+     * @param callback
      */
   onCreated (callback: { (browserWindow: any): void; (browserWindow: any): void; (arg0: BrowserWindow): void }) {
     this._eventEmitter.once('created', () => {
