@@ -109,10 +109,13 @@ export default Vue.extend({
 
       const filteredVersions = modVersions.filter(v => v.game_versions.some(gameVersion => {
         if (gameVersion === this.instance!!.dependencies.minecraft) return true
-        const gameVer = gameVersion.split('.')
-        gameVer.pop()
-        return this.instance!!.dependencies.minecraft === gameVer.join('.')
+        // we do the instance version instead as we know it's always 3 `.`s
+        const gameVerNoMinor = this.instance!!.dependencies.minecraft.split('.')
+        gameVerNoMinor.pop()
+        return gameVersion === gameVerNoMinor.join('.')
       }))
+
+      console.log({ modVersions, filteredVersions })
 
       console.log(filteredVersions)
 

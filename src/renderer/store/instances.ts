@@ -55,6 +55,11 @@ export default class InstancesModule extends VuexModule {
 
    @Action
   async ADD_INSTANCE ({ name, fabricLoader, fabricLoaderVersion, ram, assetRoot, store }: AddInstanceType) {
+    // calculate weather to add .0 or not
+    const splitLoader = fabricLoader.version.split('.')
+    splitLoader.pop()
+    const minecraftVersion = splitLoader.length === 2 ? fabricLoader.version : `${fabricLoader.version}.0`
+
     const uiStore = getModule(UiModule, store)
     const version: Modpack = {
       name,
@@ -64,7 +69,7 @@ export default class InstancesModule extends VuexModule {
       releaseDate: new Date().toISOString(),
       formatVersion: 1,
       dependencies: {
-        minecraft: fabricLoader.version,
+        minecraft: minecraftVersion,
         'fabric-loader': fabricLoaderVersion.version
       },
       files: [],
@@ -110,7 +115,7 @@ export default class InstancesModule extends VuexModule {
     const folderToDelete = path.join(this.userData, 'instances', instance.name)
     if (existsSync(folderToDelete)) {
       rm('-rf', folderToDelete)
-      this.context.dispatch('REFRESH_INSTANCES')
+      await this.context.dispatch('REFRESH_INSTANCES')
     }
   }
 
@@ -125,7 +130,7 @@ export default class InstancesModule extends VuexModule {
       const filteredVersions = modVersions.filter(v => v.game_versions.some(gameVer => {
         if (gameVer === instance.dependencies.minecraft) return true
 
-        const gameVerNoMinor = gameVer.split('.')
+        const gameVerNoMinor = instance.dependencies.minecraft.split('.')
         gameVerNoMinor.pop()
         return instance.dependencies.minecraft === gameVerNoMinor.join('.')
       }))
@@ -138,9 +143,23 @@ export default class InstancesModule extends VuexModule {
       })
     }
 
-    download(mod.url, path.join(this.userData, 'instances', instance.name, '.minecraft', 'mods', mod.filename), err => {
+    download(mod.url, path.join(this.userData, 'instances', instance.name, '.minecraft', 'mods', mod.filename), async err => {
       if (!err) {
-        console.log('done downloading')
+        console.log('done downloading, adding to instance.json')
+
+        const modFile: ModFile = {
+          id,
+          path: `mods/${mod.filename}`,
+          downloads: [
+            mod.filename
+          ]
+        }
+
+        const instancePath = path.join(this.userData, 'instances', instance.name, 'instance.json')
+
+        const newJson: Modpack = JSON.parse((await fs.readFile(instancePath)).toString())
+        newJson.files.push(modFile)
+        await fs.writeFile(instancePath, JSON.stringify(newJson))
       }
     })
   }
@@ -159,4 +178,4 @@ function download (url: string, dest: string, cb: (err?: string) => void) {
     await fs.unlink(dest)
     if (cb) cb(err.message)
   })
-};
+}
