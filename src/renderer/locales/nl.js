@@ -1,95 +1,95 @@
 module.exports = {
   header: {
     home: 'home',
-    instances: 'instances',
-    about: 'about',
+    instances: 'instanties',
+    about: 'over',
     accounts: {
-      addAcc: 'Add account',
-      subtitle: 'Go ahead, add another account or your first one!',
+      addAcc: 'Voeg account toe',
+      subtitle: 'Ga je gang, voeg nog een account toe, of je eerste!',
       placeholder: 'Accounts'
     }
   },
   authModal: {
-    title: 'Add user',
-    email: 'email',
-    password: 'password',
-    submit: 'submit',
-    close: 'close'
+    title: 'Voeg gebruiker toe',
+    email: 'e-mail',
+    password: 'wachtwoord',
+    submit: 'log in',
+    close: 'sluit'
   },
   addInstanceModal: {
-    instanceName: 'Instance Name',
-    selectVersion: 'Select Version',
-    selectFabricVersion: 'Select Fabric Version',
-    showUnstable: 'Show unstable versions',
-    title: 'Setup Instance | Select template | Extra Settings',
+    instanceName: 'Instantie Naam',
+    selectVersion: 'Selecteer Versie',
+    selectFabricVersion: 'Selecteer Fabric Versie',
+    showUnstable: 'Laat Instabiele Versies Zien',
+    title: 'Maak Instantie | Selecteer Blauwtekening | Extra Instellingen',
     ramSettings: {
-      title: 'Ram settings',
+      title: 'Ram Instellingen',
       minRam: {
         title: 'Min ram',
-        hint: 'Minimum ram allocated to Minecraft'
+        hint: 'Minimum ram toegewezen aan Minecraft'
       },
       maxRam: {
         title: 'Max ram',
-        hint: 'Maximum ram allocated to Minecraft'
+        hint: 'Maximum ram toegewezen aan Minecraft'
       }
     },
     randomSettings: {
-      title: 'Random settings',
+      title: 'Willekeurige instellingen',
       assetRoot: {
         title: 'asset Root',
-        hint: 'Where minecraft assets are stored. You shouldn\'t need to change this. Leave blank for default'
+        hint: 'Waar Minecraft gegevens worden opgeslagen. Je zou dit niet hoeven aan te passen. Laat standaard blank'
       }
     }
   },
   settings: {
-    title: 'Settings',
+    title: 'Instellingen',
     sections: {
       general: {
-        title: 'General',
+        title: 'Algemeen',
         listView: {
-          name: 'List view',
-          subtitle: 'Shows mod instances as a List instead of a Grid.'
+          name: 'Lijst overzicht',
+          subtitle: 'Toon mod instanties als Lijst in plaats van een Rooster.'
         }
       }
     }
   },
   pages: {
     home: {
-      text: 'Welcome to Glowsquid, the fabric-first modrinth-powered Minecraft launcher'
+      text: 'Welkom bij Glowsquid, de fabric-eerst modrinth-powered Minecraft launcher'
     },
     about: {
-      title: 'This is mostly a test page, nothing to see here.',
-      toast: 'toast'
+      title: 'Dit is voornamelijk een test pagina, niks te zien hier.',
+      toast: 'toost'
     },
     instances: {
-      search: 'Search',
-      status: 'Downloading {download} | Type: {type}',
-      launch: 'launch',
-      moreInfo: 'More info',
-      settings: 'Settings(Deletes instances rn)',
-      mcVersion: 'Minecraft version: <span class="font-bold">{version}</span>',
-      fabricVersion: 'Fabric loader version: <span class="font-bold">{version}</span>'
+      search: 'Zoek',
+      status: 'Downloaden {download} | Type: {type}',
+      launch: 'lanceer',
+      moreInfo: 'Meer info',
+      settings: 'Instellingen(Verwijdert instanties atm)',
+      mcVersion: 'Minecraft versie: <span class="font-bold">{version}</span>',
+      fabricVersion: 'Fabric lader versie: <span class="font-bold">{version}</span>'
     },
     instance: {
-      status: 'Downloading {download} | Type: {type}',
-      addMods: 'Add mods',
-      settings: 'Settings',
+      status: 'Downloaden {download} | Type: {type}',
+      addMods: 'Voeg mods toe',
+      settings: 'Instellingen',
       tabs: {
-        description: 'Description',
+        description: 'Beschrijving',
         mods: 'Mods'
       }
     },
     mods: {
-      search: 'Search mods',
-      about: 'About',
-      install: 'Install',
-      hint: 'You can type the mod name, author and category here'
+      search: 'Zoek mods',
+      about: 'Over',
+      install: 'Installeer',
+      hint: 'Je kunt hier de mod naam, auteur en categorie typen'
     },
     mod: {
-      install: 'Install',
+      install: 'Installeer',
       tabs: {
-        description: 'Description',
-        versions: 'Versions'
+        description: 'Beschrijving',
+        versions: 'Versies'
       }
     }
   }
