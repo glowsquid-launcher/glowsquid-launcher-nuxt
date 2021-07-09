@@ -74,6 +74,8 @@ export default class BrowserWinHandler {
       })
 
       typedIpcMain.handle('LaunchMinecraft', (_e, modpack, user) => launchMinecraft(modpack, user))
+
+      typedIpcMain.handle('GetPath', (_e, name) => { return app.getPath(name) })
     })
 
     // On macOS it's common to re-create a window in the app when the

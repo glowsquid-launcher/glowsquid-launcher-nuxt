@@ -31,7 +31,9 @@
         duration="100"
       >
         <div v-if="!leaving" class="ml-auto flex flex-col w-2/12">
-          <v-btn class="mb-2 self-center" color="secondary">{{ $t('pages.mod.install') }}</v-btn>
+          <v-btn class="mb-2 self-center" color="secondary" :disabled="alreadyInstalled">
+            {{ $t('pages.mod.install') }}
+          </v-btn>
         </div>
       </transition>
     </article>
@@ -106,12 +108,16 @@
 </template>
 
 <script lang="ts">
+import fs from 'fs'
+import path from 'path'
 import marked from 'marked'
 import DOMPurify from 'dompurify'
 import { getModule } from 'vuex-module-decorators'
 import Vue from 'vue'
 import Mod from '../../../../../types/Mod'
 import ModVersion from '../../../../../types/ModVersion'
+import { typedIpcRenderer } from '../../../../../types/Ipc'
+import Modpack from '../../../../../types/Modpack'
 import InstancesModule from '~/store/instances'
 import UiModule from '~/store/ui'
 
@@ -133,11 +139,24 @@ export default Vue.extend({
       versions: [] as ModVersion[],
       versionFilter: '',
       supportedVersions: [] as string[],
-      filteredVersions: [] as ModVersion[]
+      filteredVersions: [] as ModVersion[],
+      alreadyInstalled: false
     }
   },
   async fetch () {
+    const instance = getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id)
     this.mod = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}`)
+
+    this.alreadyInstalled = await (async () => {
+      const instanceJsonPath = path.join(
+        await typedIpcRenderer.invoke('GetPath', 'userData'),
+        'instances', instance.name, 'instance.json'
+      )
+
+      const instanceJson: Modpack = JSON.parse(fs.readFileSync(instanceJsonPath).toString())
+      return instanceJson.files.some(file => file.id === this.mod.id)
+    })()
+
     this.versions = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}/version`)
     this.filteredVersions = this.versions
 
@@ -156,8 +175,8 @@ export default Vue.extend({
   },
   watch: {
     versionFilter () {
-      // when the filter updates actaully filter results
-      // incase filter is empty we just set it to all versions
+      // when the filter updates actually filter results
+      // in case filter is empty we just set it to all versions
       this.filteredVersions = this.versionFilter
 
         ? this.versions.filter(v => v.game_versions.includes(this.versionFilter))

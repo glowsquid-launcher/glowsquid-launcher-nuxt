@@ -15,6 +15,10 @@ export type Events = {
 type Commands = {
     LaunchMinecraft: (modpack: Modpack, user: IUser) => void
     UpdatePresence: (newPresence: RPC.Presence) => void
+    GetPath: (
+      // eslint-disable-next-line max-len
+      name: 'home' | 'appData' | 'userData' | 'cache' | 'temp' | 'exe' | 'module' | 'desktop' | 'documents' | 'downloads' | 'music' | 'pictures' | 'videos' | 'recent' | 'logs' | 'pepperFlashSystemPlugin' | 'crashDumps'
+    ) => string
 }
 
 export const typedIpcMain = ipcMain as TypedIpcMain<Events, Commands>

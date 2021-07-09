@@ -55,7 +55,7 @@
                 >
                   {{ $t('pages.mods.about') }}
                 </v-btn>
-                <v-btn block @click="downloadMod(mod)">
+                <v-btn block :disabled="mod.alreadyInstalled" @click="downloadMod(mod)">
                   {{ $t('pages.mods.install') }}
                 </v-btn>
               </div>
@@ -68,12 +68,28 @@
 </template>
 
 <script lang="ts">
+import path from 'path'
+import fs from 'fs'
 import { getModule } from 'vuex-module-decorators'
 import Vue from 'vue'
 import ModList from '../../../../../types/ModList'
 import ModResult from '../../../../../types/ModResult'
+import { typedIpcRenderer } from '../../../../../types/Ipc'
+import Modpack from '../../../../../types/Modpack'
 import InstancesModule from '~/store/instances'
 import ModVersion from '~/../types/ModVersion'
+
+type NewModResult = ModResult & {
+  alreadyInstalled: boolean
+}
+
+interface NewModList {
+  hits: NewModResult[];
+  offset: number
+  limit: number
+  // eslint-disable-next-line camelcase
+  total_hits: number
+}
 
 export default Vue.extend({
   beforeRouteLeave (_, _2, next) {
@@ -88,12 +104,43 @@ export default Vue.extend({
       instance: getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id),
       searchQuery: '',
       leaving: false,
-      modList: {} as ModList
+      modList: {} as NewModList
     }
   },
   async fetch () {
     // eslint-disable-next-line max-len
-    this.modList = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod?filters=categories=fabric&versions=${this.instance?.dependencies.minecraft}`)
+    const instance = getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id)
+
+    const modList = await this.$axios.$get<ModList>(
+      `https://api.modrinth.com/api/v1/mod?filters=categories=fabric&versions=${this.instance?.dependencies.minecraft}`
+    )
+
+    const newHits: NewModResult[] = await Promise.all(modList.hits.map(async hit => {
+      const newHit: NewModResult = {
+        ...hit,
+        alreadyInstalled: await checkIfInstalled()
+      }
+
+      async function checkIfInstalled () {
+        const instanceJsonPath = path.join(
+          await typedIpcRenderer.invoke('GetPath', 'userData'),
+          'instances', instance.name, 'instance.json'
+        )
+        const instanceJson: Modpack = JSON.parse(fs.readFileSync(instanceJsonPath).toString())
+        console.log(instanceJson)
+        console.log(hit)
+        return instanceJson.files.some(file => file.id === hit.mod_id.replace('local-', ''))
+      }
+
+      return newHit
+    }))
+
+    this.modList = {
+      ...modList,
+      hits: newHits
+    }
+
+    console.log(newHits)
   },
   watch: {
     async searchQuery (newQuery) {
@@ -114,10 +161,6 @@ export default Vue.extend({
         gameVerNoMinor.pop()
         return gameVersion === gameVerNoMinor.join('.')
       }))
-
-      console.log({ modVersions, filteredVersions })
-
-      console.log(filteredVersions)
 
       await this.instanceStore.DOWNLOAD_MOD({
         instance: this.instance!!,
