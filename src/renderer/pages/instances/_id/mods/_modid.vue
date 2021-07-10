@@ -31,7 +31,12 @@
         duration="100"
       >
         <div v-if="!leaving" class="ml-auto flex flex-col w-2/12">
-          <v-btn class="mb-2 self-center" color="secondary" :disabled="alreadyInstalled" @click="downloadMod">
+          <v-btn
+            class="mb-2 self-center"
+            color="secondary"
+            :disabled="alreadyInstalled"
+            @click="downloadLatestSupportedVersion"
+          >
             {{ $t('pages.mod.install') }}
           </v-btn>
         </div>
@@ -95,7 +100,7 @@
                     for minecraft {{ version.game_versions.join(', ') }}
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn block>install</v-btn>
+                    <v-btn block @click="downloadVersion(version)">install</v-btn>
                   </v-card-actions>
                 </v-card>
               </template>
@@ -186,10 +191,10 @@ export default Vue.extend({
     }
   },
   methods: {
-    async downloadMod () {
+    async downloadLatestSupportedVersion () {
       const modVersions =
         // eslint-disable-next-line max-len
-        (await this.$axios.$get<ModVersion[]>(`https://api.modrinth.com/api/v1/mod/${this.mod.mod_id.replace('local-', '')}/version`))
+        (await this.$axios.$get<ModVersion[]>(`https://api.modrinth.com/api/v1/mod/${this.mod.id.replace('local-', '')}/version`))
 
       const filteredVersions = modVersions.filter(v => v.game_versions.some(gameVersion => {
         if (gameVersion === this.instance!!.dependencies.minecraft) return true
@@ -199,11 +204,19 @@ export default Vue.extend({
         return gameVersion === gameVerNoMinor.join('.')
       }))
 
-      await this.instanceStore.DOWNLOAD_MOD({
+      await getModule(InstancesModule, this.$store).DOWNLOAD_MOD({
         instance: this.instance!!,
         mod: filteredVersions[0].files[0],
         deps: filteredVersions[0].dependencies,
         id: modVersions[0].mod_id
+      })
+    },
+    async downloadVersion (version: ModVersion) {
+      await getModule(InstancesModule, this.$store).DOWNLOAD_MOD({
+        instance: this.instance!!,
+        mod: version.files[0],
+        deps: version.dependencies,
+        id: version.mod_id
       })
     }
   }
@@ -217,14 +230,18 @@ export default Vue.extend({
     border-radius: 15px
     paddng: 3px
   }
+
   h2 {
     font-size: 1.5rem
   }
+
   h1 {
     font-size: 2rem
   }
+
   li {
     margin-left: 8px
+
     &:before {
       content: "- "
     }
