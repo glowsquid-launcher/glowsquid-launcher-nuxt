@@ -3,10 +3,11 @@ import { ipcMain, ipcRenderer } from 'electron'
 import { TypedIpcMain, TypedIpcRenderer } from 'electron-typed-ipc'
 import * as RPC from 'discord-rpc'
 import Modpack from './Modpack'
+import DownloadProgress from './DownloadProgress'
 
 export type Events = {
     MinecraftClosed: (exitCode: number) => void
-    DownloadStatus: (status: Record<string, any>) => void
+    DownloadStatus: (status: DownloadProgress) => void
     DownloadProgress: (progress: Record<string, any>) => void
     PackageExtracted: () => void
 
