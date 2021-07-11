@@ -99,7 +99,7 @@ export default class InstancesModule extends VuexModule {
   @Action
    async REFRESH_INSTANCES () {
      const userData = await typedIpcRenderer.invoke('GetPath', 'userData')
-     // calculate weather to add .0 or not
+
      // fs.stat breaks for some reason
      if (!existsSync(path.join(userData, 'instances'))) mkdir('-p', path.join(userData, 'instances'))
 
@@ -115,7 +115,7 @@ export default class InstancesModule extends VuexModule {
   @Action
   async DELETE_INSTANCE (instance: Modpack) {
     const userData = await typedIpcRenderer.invoke('GetPath', 'userData')
-    // calculate weather to add .0 or not
+
     const folderToDelete = path.join(userData, 'instances', instance.name)
     if (existsSync(folderToDelete)) {
       rm('-rf', folderToDelete)
@@ -126,7 +126,7 @@ export default class InstancesModule extends VuexModule {
   @Action
   async DOWNLOAD_MOD ({ mod, instance, deps, id }: {mod: File, instance: Modpack, deps: string[], id: string}) {
     const userData = await typedIpcRenderer.invoke('GetPath', 'userData')
-    // calculate weather to add .0 or not
+
     for (const dep in deps) {
       const modVersions =
       // eslint-disable-next-line max-len
@@ -166,6 +166,7 @@ export default class InstancesModule extends VuexModule {
         const newJson: Modpack = JSON.parse((await fs.readFile(instancePath)).toString())
         newJson.files.push(modFile)
         await fs.writeFile(instancePath, JSON.stringify(newJson))
+        this.PUSH_MOD({ mod: modFile, instance })
       }
     })
   }

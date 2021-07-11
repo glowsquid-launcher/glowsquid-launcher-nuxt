@@ -1,5 +1,5 @@
 <template>
-  <div v-if="instance" class="flex flex-col">
+  <div v-if="instance && ready" class="flex flex-col">
     <article class="ml-4 flex max-h-40">
       <transition
         name="slide-y-transition"
@@ -60,7 +60,50 @@
           <!-- eslint-disable-next-line vue/no-v-html we sanitised this using DOMPurify so we know its safe-->
           <div class="ml-3" v-html="desc" />
         </v-tab-item>
-        <v-tab-item id="mods" key="mods" />
+        <v-tab-item id="mods" key="mods">
+          <transition
+            v-for="(mod) in modList"
+            :key="mod.id"
+            name="slide-y-transition"
+            duration="100"
+            appear
+          >
+            <section class="mt-5 mb-5 hover:shadow-xl">
+              <v-card color="primary">
+                <v-card-title>
+                  <p class="text-h5 text-center w-full">{{ mod.title }}</p>
+                </v-card-title>
+                <v-card-subtitle>
+                  <p class="subtitle-2 text-center">
+                    by {{ membersMap.get(mod.id).map(member => member.name).join(", ") }}
+                  </p>
+                </v-card-subtitle>
+                <v-card-text>
+                  <p class="body-1 italic text-center"> {{ mod.description }} </p>
+                </v-card-text>
+                <v-card-actions class="flex justify-center">
+                  <section class="grid grid-cols-3 gap-24 w-3/4">
+                    <v-btn
+                      color="secondary"
+                      @click="$router.push({
+                        path: localePath(`/instances/${$route.params.id}/mods/${mod.id.replace('%7D', '')}`)
+                      })"
+                    >
+                      About Mod
+                    </v-btn>
+                    <!-- error looks better than default red -->
+                    <v-btn color="error">
+                      delete
+                    </v-btn>
+                    <v-btn color="secondary">
+                      reinstall
+                    </v-btn>
+                  </section>
+                </v-card-actions>
+              </v-card>
+            </section>
+          </transition>
+        </v-tab-item>
       </v-tabs>
     </transition>
   </div>
@@ -72,6 +115,9 @@ import DOMPurify from 'dompurify'
 import { getModule } from 'vuex-module-decorators'
 import Vue from 'vue'
 import ModFile from '../../../../types/ModFile'
+import Mod from '../../../../types/Mod'
+import { TeamMember } from '../../../../types/TeamMember'
+import { User } from '../../../../types/User'
 import DownloadProgress from '~/../types/DownloadProgress'
 import InstancesModule from '~/store/instances'
 import { typedIpcRenderer } from '~/../types/Ipc'
@@ -88,8 +134,36 @@ export default Vue.extend({
     return {
       instance: getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id),
       leaving: false,
-      downloadState: null as DownloadProgress | null
+      downloadState: null as DownloadProgress | null,
+      modList: [] as Mod[],
+      // string is the mod id
+      membersMap: new Map() as Map<string, User[]>,
+      ready: false
     }
+  },
+  async fetch () {
+    const instance = getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id)
+    if (!instance) return
+
+    this.modList = await Promise.all(instance.files.map(async modFile => {
+      const mod: Mod = this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${modFile.id}`)
+      return mod
+    }))
+
+    await Promise.all(this.modList.map(async mod => {
+      const teamMembers: TeamMember[] = await this.$axios.$get(
+        `https://api.modrinth.com/api/v1/team/${mod.team}/members`
+      )
+
+      const users: User[] = await Promise.all(teamMembers.map(member =>
+        this.$axios.$get(`https://api.modrinth.com/api/v1/user/${member.user_id}`)
+      ))
+
+      this.membersMap.set(mod.id, users)
+    }))
+
+    // to prevent bad errors
+    this.ready = true
   },
   computed: {
     desc (): string {
@@ -113,6 +187,7 @@ export default Vue.extend({
 
     }
   }
+
 })
 </script>
 

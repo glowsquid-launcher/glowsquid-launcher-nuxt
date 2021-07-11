@@ -55,7 +55,7 @@
                 >
                   {{ $t('pages.mods.about') }}
                 </v-btn>
-                <v-btn block :disabled="mod.alreadyInstalled" @click="downloadMod(mod)">
+                <v-btn block :disabled="mod.alreadyInstalled" @click="downloadLatestSupportedVersion(mod)">
                   {{ $t('pages.mods.install') }}
                 </v-btn>
               </div>

@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e25bf89c-4829-4354-8201-aa30cdd92760" name="Changes" comment="">
+    <list default="true" id="e25bf89c-4829-4354-8201-aa30cdd92760" name="Changes" comment="feat: general polish">
+      <change afterPath="$PROJECT_DIR$/src/types/TeamMember.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/types/User.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/about.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/about.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/index.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/pages/instances/_id/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/instances/_id/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/instances/_id/mods/_modid.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/instances/_id/mods/_modid.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/renderer/pages/instances/_id/mods/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/instances/_id/mods/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/pages/instances/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/pages/instances/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/renderer/store/users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/store/users.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/renderer/store/instances.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/renderer/store/instances.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -26,9 +31,6 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
-  </component>
-  <component name="ProblemsViewState">
-    <option name="selectedIndex" value="1" />
   </component>
   <component name="ProjectId" id="1v2adxcY7pQGgjbxQ0UWx7Tk1gH" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -50,7 +52,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="yarn" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-    <property name="settings.editor.selected.configurable" value="watcher.settings" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="ts.external.directory.path" value="D:\projects\glowsquid\node_modules\typescript\lib" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
@@ -80,6 +82,7 @@
       <workItem from="1625907172438" duration="1683000" />
       <workItem from="1625930864648" duration="2857000" />
       <workItem from="1625938121829" duration="1759000" />
+      <workItem from="1625991865546" duration="8636000" />
     </task>
     <task id="LOCAL-00001" summary="refactor: launch minecraft through IPC calls">
       <created>1625768714125</created>
@@ -144,7 +147,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625938341898</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="feat: general polish">
+      <created>1625991997807</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1625991997807</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -175,7 +185,8 @@
     <MESSAGE value="refactor: change type for Events#DownloadStatus" />
     <MESSAGE value="chore: IDEA/Webstorm Stuff" />
     <MESSAGE value="chore: commit IDEA/Webstorm stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="chore: commit IDEA/Webstorm stuff" />
+    <MESSAGE value="feat: general polish" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: general polish" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
