@@ -12,7 +12,7 @@ export default interface ModVersion {
   downloads: number;
   version_type: string;
   files: File[];
-  dependencies: any[];
+  dependencies: string[];
   game_versions: string[];
   loaders: string[];
 }

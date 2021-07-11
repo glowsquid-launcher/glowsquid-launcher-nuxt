@@ -1706,6 +1706,11 @@
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-4.1.5.tgz#b14efa8852b7768d898906613c23f688713e02cd"
   integrity sha512-Q1y515GcOdTHgagaVFhHnIFQ38ygs/kmxdNpvpou+raI9UO3YZcHDngBSYKQklcKlvA7iuQlmIKbzvmxcOE9CQ==
 
+"@types/discord-rpc@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@types/discord-rpc/-/discord-rpc-3.0.5.tgz#16f03fb6ca9a111e4e1f69571e966d1ddf893160"
+  integrity sha512-rgv9W0XNZt437MoUrQfS6OPjTn1MI3Oix9l5aKyzma5Xf4MAiXbHTPUrL62HlHx6WuFMI58bQpJqoXjz+fHCuQ==
+
 "@types/dompurify@2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@types/dompurify/-/dompurify-2.2.1.tgz#eebf3af8afe2f577a53acab9d98a3a4cb04bbbe7"
@@ -2426,12 +2431,10 @@
   resolved "https://registry.yarnpkg.com/@xpda-dev/electron-launcher/-/electron-launcher-0.2.1.tgz#521ae0140420cc574e761f9d35e7c05992d38702"
   integrity sha512-VhGcKsH9u264hgdL2rsbhKZcPMgeCAJkMfjyocqVTCHpNvOBzUmhBUHk3mwcr2QN1i4mHYyj2q2kyJlxYx8Ogg==
 
-"@xpda-dev/webpack-step@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@xpda-dev/webpack-step/-/webpack-step-0.1.2.tgz#d4efd77b43a3200f56dd3718c1cdddf497f3a24a"
-  integrity sha512-bVAFWub3bE6ysgmelZrp+A5PfMgUcMaWrbub/wfurXmTO947jmsmniGhodJubodihALFTVF8lH7V1cGm1yF5Sg==
-  dependencies:
-    webpack-node-externals "^1.7.2"
+"@xpda-dev/webpack-step@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@xpda-dev/webpack-step/-/webpack-step-0.1.6.tgz#55d1706ee1d8494f8d7a0cac2a3a08810c761f91"
+  integrity sha512-2OukpURjE5wtTJZB9kyAU7oPEVCszQNy1D8obs3hQDZ3fUsoWmQDPFVrIAF0XEpgjWGODwevnYG4qPrQlKoLuA==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -5379,6 +5382,11 @@ electron-to-chromium@^1.3.634:
   version "1.3.634"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.634.tgz#82ea400f520f739c4f6ff00c1f7524827a917d25"
   integrity sha512-QPrWNYeE/A0xRvl/QP3E0nkaEvYUvH3gM04ZWYtIa6QlSpEetRlRI1xvQ7hiMIySHHEV+mwDSX8Kj4YZY6ZQAw==
+
+electron-typed-ipc@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/electron-typed-ipc/-/electron-typed-ipc-0.1.0.tgz#6c0bb6641e9201cf3bbe56f65979e8b580781ad8"
+  integrity sha512-PidZOE9gJo95ybhmUUdfnSdqughtTNZasL+QlJtzyE0XqDusWJFOFc2tl5IjYGn1bF9pBzAi7TrCD4/esK2LOw==
 
 electron@11.2.1:
   version "11.2.1"
@@ -8839,9 +8847,10 @@ min-indent@^1.0.0:
   resolved "https://registry.yarnpkg.com/min-indent/-/min-indent-1.0.1.tgz#a63f681673b30571fbe8bc25686ae746eefa9869"
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
 
-minecraft-launcher-core@Suyashtnt/MinecraftLauncher-core#better-ts:
-  version "3.16.1"
-  resolved "https://codeload.github.com/Suyashtnt/MinecraftLauncher-core/tar.gz/da1b77a585686dd9039c65919d602362a62bd3d0"
+minecraft-launcher-core@^3.16.4:
+  version "3.16.4"
+  resolved "https://registry.yarnpkg.com/minecraft-launcher-core/-/minecraft-launcher-core-3.16.4.tgz#c1964333d6705c58e9a102f0ea13a053c3535003"
+  integrity sha512-nNabpw1sk8yGxgyUe/nzZ82tL24DvrVboy2Ov4ErEjqCoHM2740uupxUitYjXtUyxqtlDZIoRYKRIxYxAhg73A==
   dependencies:
     adm-zip "^0.4.13"
     checksum "^0.1.1"
@@ -13638,11 +13647,6 @@ webpack-node-externals@2.5.2, webpack-node-externals@^2.5.2:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/webpack-node-externals/-/webpack-node-externals-2.5.2.tgz#178e017a24fec6015bc9e672c77958a6afac861d"
   integrity sha512-aHdl/y2N7PW2Sx7K+r3AxpJO+aDMcYzMQd60Qxefq3+EwhewSbTBqNumOsCE1JsCUNoyfGj5465N0sSf6hc/5w==
-
-webpack-node-externals@^1.7.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/webpack-node-externals/-/webpack-node-externals-1.7.2.tgz#6e1ee79ac67c070402ba700ef033a9b8d52ac4e3"
-  integrity sha512-ajerHZ+BJKeCLviLUUmnyd5B4RavLF76uv3cs6KNuO8W+HuQaEs0y0L7o40NQxdPy5w0pcv8Ew7yPUAQG0UdCg==
 
 webpack-sources@^1.0.1, webpack-sources@^1.1.0, webpack-sources@^1.4.0, webpack-sources@^1.4.1, webpack-sources@^1.4.3:
   version "1.4.3"

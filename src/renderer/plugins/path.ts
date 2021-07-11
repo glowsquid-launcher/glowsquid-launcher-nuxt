@@ -1,10 +1,12 @@
 import * as path from 'path'
-import { remote } from 'electron'
 import { Plugin } from '@nuxt/types'
+import { typedIpcRenderer } from '../../types/Ipc'
 
-const plugin: Plugin = (_, inject) => {
+const plugin: Plugin = async (_, inject) => {
   inject('$getInstancesPath',
-    (instanceName: string) => path.join(remote.app.getPath('userData'), 'instances', instanceName))
+    async (instanceName: string) =>
+      path.join(await typedIpcRenderer.invoke('GetPath', 'userData'), 'instances', instanceName)
+  )
 }
 
 export default plugin

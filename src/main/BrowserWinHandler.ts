@@ -1,14 +1,22 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { EventEmitter } from 'events'
-import { BrowserWindow, app, ipcMain } from 'electron'
+import { BrowserWindow, app } from 'electron'
 import * as RPC from 'discord-rpc'
-import Store from 'electron-store'
+import ElectronStore from 'electron-store'
+import { typedIpcMain } from '../types/Ipc'
+import { launchMinecraft } from './utils/launchMinecraft'
 
 export default class BrowserWinHandler {
+  browserWindow: BrowserWindow
+  _eventEmitter: EventEmitter
+  options: Record<any, any>
+  allowRecreate: boolean
   /**
      * @param [options] {object} - browser window options
      * @param [allowRecreate] {boolean}
      */
-  constructor (options, allowRecreate = true) {
+  constructor (options: Record<any, any>, allowRecreate: boolean = true) {
     this._eventEmitter = new EventEmitter()
     this.allowRecreate = allowRecreate
     this.options = options
@@ -21,12 +29,13 @@ export default class BrowserWinHandler {
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
     app.on('ready', () => {
-      Store.initRenderer()
+      const store = new ElectronStore()
+
       const client = new RPC.Client({
         transport: 'ipc'
       })
 
-      let prevActivity = {
+      let prevActivity: RPC.Presence = {
         details: 'Looking around 👀',
         state: 'Not signed in yet',
         startTimestamp: new Date(),
@@ -34,8 +43,8 @@ export default class BrowserWinHandler {
         largeImageText: 'Coming not soon™'
       }
 
-      client.on('ready', () => {
-        client.setActivity({
+      client.on('ready', async () => {
+        await client.setActivity({
           details: 'Looking around 👀',
           state: 'Not signed in yet',
           startTimestamp: new Date(),
@@ -48,12 +57,12 @@ export default class BrowserWinHandler {
 
       client.login({
         clientId: '795736067675258891'
-      })
+      }).then(r => r)
 
       this._create()
 
-      ipcMain.on('updatePresence', (_e, presence) => {
-        client.setActivity({
+      typedIpcMain.handle('UpdatePresence', async (_e, presence) => {
+        await client.setActivity({
           ...prevActivity,
           ...presence
         })
@@ -62,11 +71,14 @@ export default class BrowserWinHandler {
           ...prevActivity,
           ...presence
         }
-      }
-      )
+      })
+
+      typedIpcMain.handle('LaunchMinecraft', async (_e, modpack, user) => await launchMinecraft(modpack, user))
+
+      typedIpcMain.handle('GetPath', (_e, name) => { return app.getPath(name) })
     })
 
-    // On macOS it's common to re-create a window in the app when the
+    // On macOS, it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (!this.allowRecreate) return
     app.on('activate', () => this._recreate())
@@ -78,10 +90,10 @@ export default class BrowserWinHandler {
         ...this.options,
         webPreferences: {
           ...this.options.webPreferences,
-          webSecurity: false, // disabled until modrinth's api is public
+          webSecurity: true,
           nodeIntegration: true, // allow loading modules via the require () function
           devTools: !process.env.SPECTRON, // disable on e2e test environment
-          enableRemoteModule: true
+          enableRemoteModule: false
         }
       }
     )
@@ -105,9 +117,9 @@ export default class BrowserWinHandler {
 
   /**
      *
-     * @param callback {onReadyCallback}
+     * @param callback
      */
-  onCreated (callback) {
+  onCreated (callback: { (browserWindow: any): void; (browserWindow: any): void; (arg0: BrowserWindow): void }) {
     this._eventEmitter.once('created', () => {
       callback(this.browserWindow)
     })

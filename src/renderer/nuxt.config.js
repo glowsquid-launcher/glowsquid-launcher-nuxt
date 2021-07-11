@@ -50,6 +50,10 @@ module.exports = {
           {
             code: 'ru',
             file: 'ru.js'
+          },
+          {
+            code: 'nl',
+            file: 'nl.js'
           }
         ],
         lazy: true,

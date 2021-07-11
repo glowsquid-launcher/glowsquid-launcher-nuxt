@@ -31,7 +31,14 @@
         duration="100"
       >
         <div v-if="!leaving" class="ml-auto flex flex-col w-2/12">
-          <v-btn class="mb-2 self-center" color="secondary">{{ $t('pages.mod.install') }}</v-btn>
+          <v-btn
+            class="mb-2 self-center"
+            color="secondary"
+            :disabled="alreadyInstalled"
+            @click="downloadLatestSupportedVersion"
+          >
+            {{ $t('pages.mod.install') }}
+          </v-btn>
         </div>
       </transition>
     </article>
@@ -93,12 +100,53 @@
                     for minecraft {{ version.game_versions.join(', ') }}
                   </v-card-text>
                   <v-card-actions>
-                    <v-btn block>install</v-btn>
+                    <v-btn block @click="downloadVersion(version)">install</v-btn>
                   </v-card-actions>
                 </v-card>
               </template>
             </v-hover>
           </transition>
+        </div>
+        <div v-else>
+          <section class="flex flex-col align-center justify-items-start pt-6">
+            <transition
+              v-for="(version) in filteredVersions"
+              :key="version.id"
+              name="slide-y-transition"
+              duration="100"
+              appear
+            >
+              <article
+                v-if="!leaving"
+                class="rounded-md pa-4 mb-4 w-3/4 div flex flex-row justify-space-between align-center flex-grow"
+              >
+                <section class="version-info">
+                  <h3 class="text-h6">{{ version.name }}</h3>
+                  <h4 class="text-subtitle-1 flex gap-2">
+                    <!-- eslint-disable-next-line vue/no-v-html -->
+                    <span v-html="$t('pages.instances.mcVersion', {
+                      version: version.game_versions.join(', ')
+                    })"
+                    />
+                  </h4>
+                </section>
+                <section>
+                  <button class="rounded-lg card-action pa-1" :disabled="alreadyInstalled"
+                          @click="downloadVersion(version)"
+                  >
+                    <v-tooltip top>
+                      <template #activator="{ on, attrs }">
+                        <v-icon v-bind="attrs" v-on="on">
+                          mdi-plus
+                        </v-icon>
+                      </template>
+                      <span> install </span>
+                    </v-tooltip>
+                  </button>
+                </section>
+              </article>
+            </transition>
+          </section>
         </div>
       </v-tab-item>
     </v-tabs>
@@ -106,15 +154,20 @@
 </template>
 
 <script lang="ts">
+import fs from 'fs'
+import path from 'path'
 import marked from 'marked'
 import DOMPurify from 'dompurify'
 import { getModule } from 'vuex-module-decorators'
+import Vue from 'vue'
 import Mod from '../../../../../types/Mod'
 import ModVersion from '../../../../../types/ModVersion'
+import { typedIpcRenderer } from '../../../../../types/Ipc'
+import Modpack from '../../../../../types/Modpack'
 import InstancesModule from '~/store/instances'
 import UiModule from '~/store/ui'
 
-export default {
+export default Vue.extend({
   beforeRouteLeave (_, _2, next) {
     this.leaving = true
     setTimeout(() => {
@@ -132,11 +185,26 @@ export default {
       versions: [] as ModVersion[],
       versionFilter: '',
       supportedVersions: [] as string[],
-      filteredVersions: [] as ModVersion[]
+      filteredVersions: [] as ModVersion[],
+      alreadyInstalled: false
     }
   },
   async fetch () {
+    const instance = getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id)
+    if (!instance) return
+
     this.mod = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}`)
+
+    this.alreadyInstalled = await (async () => {
+      const instanceJsonPath = path.join(
+        await typedIpcRenderer.invoke('GetPath', 'userData'),
+        'instances', instance.name, 'instance.json'
+      )
+
+      const instanceJson: Modpack = JSON.parse(fs.readFileSync(instanceJsonPath).toString())
+      return instanceJson.files.some(file => file.id === this.mod.id)
+    })()
+
     this.versions = await this.$axios.$get(`https://api.modrinth.com/api/v1/mod/${this.$route.params.modid}/version`)
     this.filteredVersions = this.versions
 
@@ -149,21 +217,51 @@ export default {
     })
   },
   computed: {
-    useList () {
+    useList (): boolean {
       return this.uiStore.listMode
     }
   },
   watch: {
     versionFilter () {
-      // when the filter updates actaully filter results
-      // incase filter is empty we just set it to all versions
+      // when the filter updates actually filter results
+      // in case filter is empty we just set it to all versions
       this.filteredVersions = this.versionFilter
 
         ? this.versions.filter(v => v.game_versions.includes(this.versionFilter))
         : this.versions
     }
+  },
+  methods: {
+    async downloadLatestSupportedVersion () {
+      const modVersions =
+        // eslint-disable-next-line max-len
+        (await this.$axios.$get<ModVersion[]>(`https://api.modrinth.com/api/v1/mod/${this.mod.id.replace('local-', '')}/version`))
+
+      const filteredVersions = modVersions.filter(v => v.game_versions.some(gameVersion => {
+        if (gameVersion === this.instance!!.dependencies.minecraft) return true
+        // we do the instance version instead as we know it's always 3 `.`s
+        const gameVerNoMinor = this.instance!!.dependencies.minecraft.split('.')
+        gameVerNoMinor.pop()
+        return gameVersion === gameVerNoMinor.join('.')
+      }))
+
+      await getModule(InstancesModule, this.$store).DOWNLOAD_MOD({
+        instance: this.instance!!,
+        mod: filteredVersions[0].files[0],
+        deps: filteredVersions[0].dependencies,
+        id: modVersions[0].mod_id
+      })
+    },
+    async downloadVersion (version: ModVersion) {
+      await getModule(InstancesModule, this.$store).DOWNLOAD_MOD({
+        instance: this.instance!!,
+        mod: version.files[0],
+        deps: version.dependencies,
+        id: version.mod_id
+      })
+    }
   }
-}
+})
 </script>
 
 <style lang="stylus">
@@ -173,14 +271,18 @@ export default {
     border-radius: 15px
     paddng: 3px
   }
+
   h2 {
     font-size: 1.5rem
   }
+
   h1 {
     font-size: 2rem
   }
+
   li {
     margin-left: 8px
+
     &:before {
       content: "- "
     }
@@ -190,5 +292,17 @@ export default {
 .version-card {
   position: relative
   padding-bottom: 5px !important
+}
+
+.card-action {
+  background-color #444444
+
+  &:hover {
+    background-color #555555
+  }
+
+  &:active {
+    background-color #666666
+  }
 }
 </style>

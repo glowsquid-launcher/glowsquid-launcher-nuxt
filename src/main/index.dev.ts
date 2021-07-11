@@ -1,10 +1,11 @@
+// @ts-nocheck
 import fs from 'fs'
 import path from 'path'
 import { Menu, MenuItem, app } from 'electron'
 import electronDebug from 'electron-debug'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import { ELECTRON_RELAUNCH_CODE } from '../../.electron-nuxt/config'
-import mainWinHandler from './mainWindow'
+import mainWinHandler from './mainWindow.ts'
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
 
 electronDebug({
@@ -45,4 +46,4 @@ mainWinHandler.onCreated(browserWindow => {
 })
 
 // Require `main` process to boot app
-require('./index')
+import('./index.ts')

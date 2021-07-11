@@ -24,13 +24,6 @@
         </v-btn>
       </v-toolbar>
     </transition>
-    <div v-if="downloadState">
-      {{ $t('pages.instances.status', {
-        download: downloadState.name,
-        type: downloadState.type,
-        percent: Math.round(downloadState.current / downloadState.total * 100)
-      }) }}
-    </div>
     <div
       v-if="!useList"
       class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2 justify-center mt-4 ml-3"
@@ -67,9 +60,16 @@
                   version: instance.dependencies['fabric-loader']
                 })"
                 />
-              </v-card-subtitle>
-              <v-card-text class="text-center">
                 {{ instance.summary }}
+              </v-card-subtitle>
+              <v-card-text v-if="downloadState && selectedInstance === instance">
+                {{ $t('pages.instances.status', {
+                  download: downloadState.name,
+                  type: downloadState.type
+                }) }}
+                <v-progress-linear
+                  :value="downloadState.current / downloadState.total * 100"
+                />
               </v-card-text>
             </v-card>
           </template>
@@ -91,12 +91,12 @@
                 <h3 class="text-h6">{{ instance.name }}</h3>
                 <h4 class="text-subtitle-1 flex gap-2">
                   <!-- eslint-disable-next-line vue/no-v-html -->
-                  <div v-html="$t('pages.instances.mcVersion', {
+                  <span v-html="$t('pages.instances.mcVersion', {
                     version: instance.dependencies.minecraft
                   })"
                   /> |
                   <!-- eslint-disable-next-line vue/no-v-html -->
-                  <div v-html="$t('pages.instances.mcVersion', {
+                  <span v-html="$t('pages.instances.mcVersion', {
                     version: instance.dependencies['fabric-loader']
                   })"
                   />
@@ -175,15 +175,16 @@
 </template>
 
 <script lang="ts">
-import launch from '@/utils/launch'
-import { ipcRenderer } from 'electron'
 import Modpack from '@/../types/Modpack'
 import DownloadProgress from '@/../types/DownloadProgress'
 import { getModule } from 'vuex-module-decorators'
+import Vue from 'vue'
+import { typedIpcRenderer } from '../../../types/Ipc'
 import InstancesModule from '~/store/instances'
 import UiModule from '~/store/ui'
+import UserModule from '~/store/users'
 
-export default {
+export default Vue.extend({
   beforeRouteLeave (_, _2, next) {
     this.leaving = true
     setTimeout(() => {
@@ -202,24 +203,24 @@ export default {
   },
   computed: {
     isVisible: {
-      get () {
+      get (): boolean {
         return this.selectedInstance !== null
       },
       set (val) {
         if (val === false) this.selectedInstance = null
       }
     },
-    useList () {
+    useList (): boolean {
       return this.uiStore.listMode
     },
-    instances () {
+    instances (): Modpack[] {
       return this.filter
         ? this.instanceStore.instances.filter(instance => instance.name.includes(this.filter))
         : this.instanceStore.instances
     }
   },
   mounted () {
-    ipcRenderer.send('updatePresence', {
+    typedIpcRenderer.invoke('UpdatePresence', {
       details: 'Looking at their instances 👀',
       startTimestamp: new Date()
     })
@@ -236,14 +237,16 @@ export default {
       await this.instanceStore.DELETE_INSTANCE(instance)
     },
     async launch (instance: Modpack | null) {
-      const client = await launch(instance, this.$store)
-      client?.on('download-status', e => { this.downloadState = e })
+      if (this.instance === undefined) return
+      await typedIpcRenderer.invoke('LaunchMinecraft', instance!!, getModule(UserModule, this.$store).selected)
+      typedIpcRenderer.on('DownloadStatus', (_e, status) => { this.downloadState = status })
+      typedIpcRenderer.on('DownloadProgress', (_e, _progress) => {})
     },
     addInstance () {
       this.uiStore.TOGGLE_ADD_INSTANCE_MODAL()
     }
   }
-}
+})
 </script>
 
 <style lang="stylus">

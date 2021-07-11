@@ -1,7 +1,7 @@
 import { IUser, Authenticator } from 'minecraft-launcher-core'
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { store } from '@/plugins/store'
-import { ipcRenderer } from 'electron'
+import { typedIpcRenderer } from '../../types/Ipc'
 
 @Module({
   name: 'users',
@@ -21,9 +21,9 @@ export default class UserModule extends VuexModule {
   @Mutation
   SET_USER (idx: number) {
     this.selected = this.users[idx]
-    ipcRenderer.send('updatePresence', {
+    typedIpcRenderer.invoke('UpdatePresence', {
       state: `Signed in as ${this.selected.name}`
-    })
+    }).then(r => r)
     store.set('selectedUser', this.selected)
   }
 

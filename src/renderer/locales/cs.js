@@ -63,7 +63,7 @@ module.exports = {
       toast: 'toast'
     },
     instances: {
-      search: 'Aktuální status: Probíhá stahování {download} | Typ: {type} | Staženo {percent}%',
+      search: 'Probíhá stahování {download} | Typ: {type}',
       launch: 'hrát',
       moreInfo: 'Více informací',
       settings: 'Nastavní (Aktuálně maže instance)',
@@ -71,7 +71,7 @@ module.exports = {
       fabricVersion: 'Fabric verze: <span class="font-bold">{version}</span>'
     },
     instance: {
-      status: 'Aktuální status: Probíhá stahování {download} | Typ: {type} | Staženo {percent}%',
+      status: 'Probíhá stahování {download} | Typ: {type}',
       addMods: 'Přidat mody',
       settings: 'Nastavení',
       tabs: {

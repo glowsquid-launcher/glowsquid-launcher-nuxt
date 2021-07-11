@@ -9,15 +9,16 @@
 </template>
 
 <script lang="ts">
-import { ipcRenderer } from 'electron'
-export default {
+import Vue from 'vue'
+import { typedIpcRenderer } from '../../types/Ipc'
+export default Vue.extend({
   data () {
     return {
       dur: 1000
     }
   },
   mounted () {
-    ipcRenderer.send('updatePresence', {
+    typedIpcRenderer.invoke('UpdatePresence', {
       details: 'testing stuff',
       state: 'Not signed in yet',
       startTimestamp: new Date(),
@@ -28,10 +29,10 @@ export default {
   methods: {
     toast () {
       this.$toast.show('yes', {
-        icon: 'information',
+        icon: 'Information',
         duration: this.dur
       })
     }
   }
-}
+})
 </script>

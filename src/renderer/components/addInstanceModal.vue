@@ -147,10 +147,11 @@
 import FabricVersion from '@/../types/FabricVersion'
 import FabricLoaderVersion from '@/../types/FabricLoaderVersion'
 import { getModule } from 'vuex-module-decorators'
+import Vue from 'vue'
 import InstancesModule from '~/store/instances'
 import UiModule from '~/store/ui'
 
-export default {
+export default Vue.extend({
   data () {
     return {
       instanceStore: getModule(InstancesModule, this.$store),
@@ -235,5 +236,5 @@ export default {
         .then(() => this.visible === false)
     }
   }
-}
+})
 </script>

@@ -18,7 +18,7 @@ const launcher = new ElectronLauncher({
   entryFile: path.join(DIST_DIR, 'main/index.js')
 })
 
-function hasConfigArgument (array) {
+function hasConfigArgument(array) {
   for (const el of array) if (el === '--config' || el === '-c') return true
   return false
 }
@@ -29,10 +29,10 @@ const builder = new ElectronBuilder({
   processArgv: argumentsArray
 })
 
-const webpackConfig = Webpack.getBaseConfig({
+const webpackConfig = Webpack.getTypescriptConfig({
   entry: isDev
-    ? path.join(MAIN_PROCESS_DIR, 'index.dev.js')
-    : path.join(MAIN_PROCESS_DIR, 'index.js'),
+    ? path.join(MAIN_PROCESS_DIR, 'index.dev.ts')
+    : path.join(MAIN_PROCESS_DIR, 'index.ts'),
   output: {
     filename: 'index.js',
     path: path.join(DIST_DIR, 'main')
