@@ -58,11 +58,9 @@
 
         <v-tab-item id="desc" key="desc" class="flex-grow">
           <!-- eslint-disable-next-line vue/no-v-html we sanitised this using DOMPurify so we know its safe-->
-          <div class="ml-3" v-html="desc"/>
+          <div class="ml-3" v-html="desc" />
         </v-tab-item>
-        <v-tab-item id="mods" key="mods">
-          yes
-        </v-tab-item>
+        <v-tab-item id="mods" key="mods" />
       </v-tabs>
     </transition>
   </div>
@@ -73,6 +71,7 @@ import marked from 'marked'
 import DOMPurify from 'dompurify'
 import { getModule } from 'vuex-module-decorators'
 import Vue from 'vue'
+import ModFile from '../../../../types/ModFile'
 import DownloadProgress from '~/../types/DownloadProgress'
 import InstancesModule from '~/store/instances'
 import { typedIpcRenderer } from '~/../types/Ipc'
@@ -109,8 +108,9 @@ export default Vue.extend({
         this.downloadState = status
         console.log(status)
       })
-      typedIpcRenderer.on('DownloadProgress', (_e, _progress) => {
-      })
+    },
+    async deleteMod (mod: ModFile) {
+
     }
   }
 })

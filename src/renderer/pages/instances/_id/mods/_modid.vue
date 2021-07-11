@@ -107,6 +107,47 @@
             </v-hover>
           </transition>
         </div>
+        <div v-else>
+          <section class="flex flex-col align-center justify-items-start pt-6">
+            <transition
+              v-for="(version) in filteredVersions"
+              :key="version.id"
+              name="slide-y-transition"
+              duration="100"
+              appear
+            >
+              <article
+                v-if="!leaving"
+                class="rounded-md pa-4 mb-4 w-3/4 div flex flex-row justify-space-between align-center flex-grow"
+              >
+                <section class="version-info">
+                  <h3 class="text-h6">{{ version.name }}</h3>
+                  <h4 class="text-subtitle-1 flex gap-2">
+                    <!-- eslint-disable-next-line vue/no-v-html -->
+                    <span v-html="$t('pages.instances.mcVersion', {
+                      version: version.game_versions.join(', ')
+                    })"
+                    />
+                  </h4>
+                </section>
+                <section>
+                  <button class="rounded-lg card-action pa-1" :disabled="alreadyInstalled"
+                          @click="downloadVersion(version)"
+                  >
+                    <v-tooltip top>
+                      <template #activator="{ on, attrs }">
+                        <v-icon v-bind="attrs" v-on="on">
+                          mdi-plus
+                        </v-icon>
+                      </template>
+                      <span> install </span>
+                    </v-tooltip>
+                  </button>
+                </section>
+              </article>
+            </transition>
+          </section>
+        </div>
       </v-tab-item>
     </v-tabs>
   </div>
@@ -251,5 +292,17 @@ export default Vue.extend({
 .version-card {
   position: relative
   padding-bottom: 5px !important
+}
+
+.card-action {
+  background-color #444444
+
+  &:hover {
+    background-color #555555
+  }
+
+  &:active {
+    background-color #666666
+  }
 }
 </style>

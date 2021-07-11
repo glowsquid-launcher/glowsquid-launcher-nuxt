@@ -40,6 +40,7 @@
 import { ipcRenderer } from 'electron'
 import News from '@/../types/News'
 import Vue from 'vue'
+import { typedIpcRenderer } from '../../types/Ipc'
 import NewsType from '~/../types/NewsType'
 
 export default Vue.extend({
@@ -74,7 +75,7 @@ export default Vue.extend({
     }
   },
   mounted () {
-    ipcRenderer.send('updatePresence', {
+    typedIpcRenderer.invoke('UpdatePresence', {
       details: 'Looking around 👀',
       state: 'Not signed in yet',
       startTimestamp: new Date(),

@@ -110,6 +110,7 @@ export default Vue.extend({
   async fetch () {
     // eslint-disable-next-line max-len
     const instance = getModule(InstancesModule, this.$store).instances.find(v => v.name === this.$route.params.id)
+    if (!instance) return
 
     const modList = await this.$axios.$get<ModList>(
       `https://api.modrinth.com/api/v1/mod?filters=categories=fabric&versions=${this.instance?.dependencies.minecraft}`
@@ -124,8 +125,9 @@ export default Vue.extend({
       async function checkIfInstalled () {
         const instanceJsonPath = path.join(
           await typedIpcRenderer.invoke('GetPath', 'userData'),
-          'instances', instance.name, 'instance.json'
+          'instances', instance!!.name, 'instance.json'
         )
+
         const instanceJson: Modpack = JSON.parse(fs.readFileSync(instanceJsonPath).toString())
         return instanceJson.files.some(file => file.id === hit.mod_id.replace('local-', ''))
       }
@@ -145,7 +147,7 @@ export default Vue.extend({
     }
   },
   methods: {
-    async downloadMod (mod: ModResult) {
+    async downloadLatestSupportedVersion (mod: ModResult) {
       const modVersions =
       // eslint-disable-next-line max-len
       (await this.$axios.$get<ModVersion[]>(`https://api.modrinth.com/api/v1/mod/${mod.mod_id.replace('local-', '')}/version`))

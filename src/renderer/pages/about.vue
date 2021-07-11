@@ -9,8 +9,8 @@
 </template>
 
 <script lang="ts">
-import { ipcRenderer } from 'electron'
 import Vue from 'vue'
+import { typedIpcRenderer } from '../../types/Ipc'
 export default Vue.extend({
   data () {
     return {
@@ -18,7 +18,7 @@ export default Vue.extend({
     }
   },
   mounted () {
-    ipcRenderer.send('updatePresence', {
+    typedIpcRenderer.invoke('UpdatePresence', {
       details: 'testing stuff',
       state: 'Not signed in yet',
       startTimestamp: new Date(),

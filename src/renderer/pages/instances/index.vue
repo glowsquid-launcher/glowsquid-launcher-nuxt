@@ -62,7 +62,7 @@
                 />
                 {{ instance.summary }}
               </v-card-subtitle>
-              <v-card-text v-if="downloadState && selectedInstance == instance">
+              <v-card-text v-if="downloadState && selectedInstance === instance">
                 {{ $t('pages.instances.status', {
                   download: downloadState.name,
                   type: downloadState.type
@@ -91,12 +91,12 @@
                 <h3 class="text-h6">{{ instance.name }}</h3>
                 <h4 class="text-subtitle-1 flex gap-2">
                   <!-- eslint-disable-next-line vue/no-v-html -->
-                  <div v-html="$t('pages.instances.mcVersion', {
+                  <span v-html="$t('pages.instances.mcVersion', {
                     version: instance.dependencies.minecraft
                   })"
                   /> |
                   <!-- eslint-disable-next-line vue/no-v-html -->
-                  <div v-html="$t('pages.instances.mcVersion', {
+                  <span v-html="$t('pages.instances.mcVersion', {
                     version: instance.dependencies['fabric-loader']
                   })"
                   />
@@ -175,7 +175,6 @@
 </template>
 
 <script lang="ts">
-import { ipcRenderer } from 'electron'
 import Modpack from '@/../types/Modpack'
 import DownloadProgress from '@/../types/DownloadProgress'
 import { getModule } from 'vuex-module-decorators'
@@ -221,7 +220,7 @@ export default Vue.extend({
     }
   },
   mounted () {
-    ipcRenderer.send('updatePresence', {
+    typedIpcRenderer.invoke('UpdatePresence', {
       details: 'Looking at their instances 👀',
       startTimestamp: new Date()
     })
